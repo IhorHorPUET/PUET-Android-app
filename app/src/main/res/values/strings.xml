@@ -1,0 +1,106 @@
+<resources>
+    <string name="app_name">PUET</string>
+    <string name="schedule_title">Розклад занять в ПУЕТ</string>
+    <string name="settings">Налаштування програми</string>
+    <string name="select_search_parameters">Оберіть параметри пошуку</string>
+
+    <string name="start_date_label">Початкова дата:</string>
+    <string name="start_date_picker">Початкова дата</string>
+    <string name="select_start_date">Оберіть початкову дату</string>
+    <string name="end_date_label">Кінцева дата:</string>
+    <string name="end_date_picker">Кінцева дата</string>
+    <string name="select_end_date">Оберіть кінцеву дату</string>
+
+    <string name="teacher_label">Викладач:</string>
+    <string name="select_name_teacher">Оберіть ім\'я викладача</string>
+    <string name="clear_teacher_names">Очистити імена викладачів</string>
+    <string name="room_label">Аудиторія:</string>
+    <string name="select_name_room">Оберіть аудиторію</string>
+    <string name="clear_classroom_numbers">Очистити номери аудиторій</string>
+    <string name="group_label">Група:</string>
+    <string name="select_group">Оберіть групу</string>
+    <string name="clear_group_numbers">Очистити номери груп</string>
+    <string name="nazva_grupy">Назва групи</string>
+
+    <string name="remember_selection">Запам\'ятати обрані параметри</string>
+    <string name="search">Пошук </string>
+
+    <string name="Info"><![CDATA[<big><b>Шановні студенти та
+викладачі ПУЕТ!</b></big><br><br>
+
+За допомогою інформаційного сервісу «Розклад
+занять в ПУЕТ» Ви маєте можливість зручно та
+своєчасно отримувати актуальну інформацію
+щодо зайнятості групи, викладача та аудиторії.
+<br><br>
+Для отримання необхідної Вам інформації
+заповніть хоча б одне з полів «Викладач»,
+«Аудиторія» або «Група». Поля «Початкова
+дата» та «Кінцева дата» встановлено на
+поточний тиждень, але можуть бути змінені
+користувачем.
+<br><br>
+При заповненні одночасно полів «Викладач»,
+«Група» та «Аудиторія» Ви отримаєте розклад
+занять для обраної групи та викладача, які
+проходять в заданій аудиторії.
+<br><br>
+Після заповнення форми натисніть кнопку
+«Пошук».
+<br><br>
+Ви маєте можливість переглядати розклад
+навчального процесу за допомогою мобільних
+пристроїв та гаджетів, що мають доступ до
+мережі Інтернет.
+<br><br>
+<b>Увага!</b> В розкладі можливі зміни!]]></string>
+
+    <string name="save"> Зберегти </string>
+    <string name="cancel">Скасувати</string>
+
+    <string name="select_google_account_on_start">Вибір аккаунту Google при старті</string>
+    <string name="using_widget">Використання віджету</string>
+
+    <string name="Choose_Theme">Тема оформлення</string>
+    <string name="theme_switch">Тема оформлення</string>
+    <string name="As_System">Системна</string>
+    <string name="Always_Light">Завжди світла</string>
+    <string name="Always_Dark">Завжди темна</string>
+
+    <string name="Choose_Date_Range">Вибір діапазону дат у календарі</string>
+    <string name="date_range_seekbar">Кількість днів між початковую та кінцевою датами</string>
+    <string name="date_range">Кількість днів між початковую та кінцевою датами: %1$d</string>
+    <string name="min_date">1</string>
+    <string name="max_date">30</string>
+
+    <string name="Auto_Update_Schedule">Автоматичне оновлення розкладу</string>
+    <string name="update_interval_seekbar">Кількість годин між оновленнями</string>
+    <string name="update_interval">Кількість годин між оновленнями: %1$d</string>
+    <string name="min_hour">1</string>
+    <string name="max_hour">24</string>
+
+    <string name="Notification_Settings">Сповіщення про зміни у розкладі</string>
+    <string name="text_message">Текстове повідомлення</string>
+    <string name="Vibration">Вібрація</string>
+    <string name="Sound">Звук</string>
+    <string name="select_sound">Обрати мелодію</string>
+    <string name="select_notification_sound">Вибір мелодії</string>
+    <string name="notification_repeat_seekbar">Кількість повторів сповіщення</string>
+    <string name="notification_repeat">Кількість повторів сповіщення: %1$d</string>
+    <string name="min_repeat">1</string>
+    <string name="max_repeat">10</string>
+    <string name="notification_interval_seekbar">Кількість хвилин між повторами</string>
+    <string name="notification_interval">Кількість хвилин між повторами: %1$d</string>
+    <string name="min_time_between_repeat">15</string>
+    <string name="max_time_between_repeat">60</string>
+
+    <string name="do_not_disturb">Режим \"Не турбувати\"</string>
+    <string name="do_not_disturb_placeholder">для режима не турбувати</string>
+    <string name="start_time">початок</string>
+    <string name="end_time">закінчення</string>
+    <string name="_00_00">00:00</string>
+    <string name="_00_01">00:00</string>
+    <string name="new_lessons">Новий розклад:</string>
+    <string name="old_lessons">Старий розклад:</string>
+
+</resources>

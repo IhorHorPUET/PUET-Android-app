@@ -1,0 +1,635 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/light_blue"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- AppBarLayout with CollapsingToolbarLayout -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/blue_darker"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <LinearLayout
+                style="?android:attr/buttonBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnSave"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/save"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"
+                    android:backgroundTint="@color/light_blue"
+                    android:layout_marginEnd="16dp" />
+
+                <Button
+                    android:id="@+id/btnCancel"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cancel"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"
+                    android:backgroundTint="@color/light_blue" />
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Main Content -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="2dp">
+
+            <!-- Top Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/gray" />
+
+            <!-- Google Account Selection Checkbox -->
+            <CheckBox
+                android:id="@+id/googleAccountSelectionCheckbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/select_google_account_on_start"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:layout_marginStart="8dp"
+                android:checked="true" />
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray" />
+
+            <!-- Widget Checkbox -->
+
+            <CheckBox
+                android:id="@+id/widgetCheckbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/using_widget"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:layout_marginStart="8dp"
+                android:checked="false" />
+
+            <!-- Bottom Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray" />
+
+            <!-- Theme Selection Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="2dp"
+                android:background="@color/light_blue"
+                android:layout_marginBottom="2dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"
+                    android:text="@string/Choose_Theme"
+                    android:gravity="center"
+                    android:layout_marginVertical="2dp" />
+
+                <CheckBox
+                    android:id="@+id/chkBoxSystem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/As_System"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="8dp"
+                    android:contentDescription="@string/As_System" />
+
+                <CheckBox
+                    android:id="@+id/chkBoxLight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Always_Light"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="8dp"
+                    android:contentDescription="@string/Always_Light" />
+
+                <CheckBox
+                    android:id="@+id/chkBoxDark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Always_Dark"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="8dp"
+                    android:contentDescription="@string/Always_Dark" />
+
+                <!-- Bottom Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gray" />
+
+            </LinearLayout>
+
+            <!-- Date Range Selection Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="2dp"
+                android:background="@color/light_blue"
+                android:layout_marginBottom="2dp">
+
+                <CheckBox
+                    android:id="@+id/dateRangeCheckbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="@string/Choose_Date_Range"
+                    android:layout_gravity="start" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"
+                    android:text="@string/Choose_Date_Range"
+                    android:layout_marginVertical="2dp" />
+            </LinearLayout>
+
+            <!-- Date Range Section -->
+            <LinearLayout
+                android:id="@+id/dateRangeSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="2dp"
+                android:background="@color/light_blue"
+                android:layout_marginBottom="2dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/dateRangeText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"
+                    android:gravity="center_horizontal|top"
+                    android:padding="2dp"
+                    android:layout_marginBottom="30dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/min_date"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:layout_marginEnd="8dp" />
+
+                    <SeekBar
+                        android:id="@+id/dateRangeSeekBar"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:max="29"
+                        android:layout_marginBottom="8dp"
+                        android:textColor="@color/black"
+                        android:contentDescription="@string/date_range_seekbar" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/max_date"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:layout_marginStart="8dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Bottom Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray" />
+
+            <!-- Auto Update Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="2dp"
+                android:background="@color/light_blue"
+                android:layout_marginBottom="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <CheckBox
+                        android:id="@+id/autoUpdateCheckbox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="@string/Auto_Update_Schedule"
+                        android:layout_gravity="start" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="20sp"
+                        android:textColor="@color/black"
+                        android:text="@string/Auto_Update_Schedule"
+                        android:layout_marginVertical="2dp" />
+                </LinearLayout>
+
+                <!-- This block will be shown/hidden based on the checkbox state -->
+                <LinearLayout
+                    android:id="@+id/updateIntervalSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:padding="2dp"
+                    android:background="@color/light_blue"
+                    android:layout_marginBottom="2dp">
+
+                    <TextView
+                        android:id="@+id/updateIntervalValue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:gravity="center_horizontal|top"
+                        android:padding="2dp"
+                        android:layout_marginBottom="30dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/min_hour"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:layout_marginEnd="8dp" />
+
+                        <SeekBar
+                            android:id="@+id/updateIntervalSeekBar"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:max="23"
+                            android:progress="1"
+                            android:layout_marginBottom="8dp"
+                            android:textColor="@color/black"
+                            android:contentDescription="@string/update_interval_seekbar" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/max_hour"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Bottom Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gray" />
+
+            </LinearLayout>
+
+            <!-- Notifications Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="2dp"
+                android:background="@color/light_blue"
+                android:layout_marginBottom="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <CheckBox
+                        android:id="@+id/notificationCheckbox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="@string/Notification_Settings"
+                        android:layout_gravity="start" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="20sp"
+                        android:textColor="@color/black"
+                        android:text="@string/Notification_Settings"
+                        android:layout_marginVertical="2dp" />
+                </LinearLayout>
+
+                <!-- This block will be shown/hidden based on the checkbox state -->
+                <LinearLayout
+                    android:id="@+id/notificationOptionsSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:padding="2dp"
+                    android:background="@color/light_blue"
+                    android:layout_marginBottom="2dp">
+
+                    <CheckBox
+                        android:id="@+id/textMessageCheckbox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_message"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:layout_marginStart="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/vibrationCheckbox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/Vibration"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:layout_marginStart="8dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <CheckBox
+                            android:id="@+id/soundCheckbox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/Sound"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:layout_marginStart="8dp" />
+
+                        <Button
+                            android:id="@+id/selectSoundButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/select_sound"
+                            android:backgroundTint="@color/light_gray"
+                            android:textColor="@color/black"
+                            android:layout_marginStart="16dp"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/notificationRepeatValue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:gravity="center_horizontal|top"
+                        android:padding="2dp"
+                        android:layout_marginBottom="30dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/min_repeat"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:layout_marginEnd="8dp" />
+
+                        <SeekBar
+                            android:id="@+id/notificationRepeatSeekBar"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:max="9"
+                            android:progress="0"
+                            android:layout_marginBottom="8dp"
+                            android:textColor="@color/black"
+                            android:contentDescription="@string/notification_repeat_seekbar" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/max_repeat"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
+
+                    <!-- SeekBar for the interval between repeats -->
+                    <TextView
+                        android:id="@+id/notificationIntervalValue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:gravity="center_horizontal|top"
+                        android:padding="2dp"
+                        android:layout_marginBottom="30dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/min_time_between_repeat"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:layout_marginEnd="8dp" />
+
+                        <SeekBar
+                            android:id="@+id/notificationIntervalSeekBar"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:max="55"
+                            android:progress="0"
+                            android:layout_marginBottom="8dp"
+                            android:textColor="@color/black"
+                            android:contentDescription="@string/notification_interval_seekbar" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/max_time_between_repeat"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Bottom Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gray" />
+            </LinearLayout>
+
+            <!-- Do Not Disturb Mode Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="2dp"
+                android:background="@color/light_blue"
+                android:layout_marginBottom="2dp">
+
+                <!-- Checkbox for Do Not Disturb -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <CheckBox
+                        android:id="@+id/doNotDisturbCheckbox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="@string/do_not_disturb"
+                        android:layout_gravity="start" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="20sp"
+                        android:textColor="@color/black"
+                        android:text="@string/do_not_disturb"
+                        android:layout_marginVertical="2dp" />
+                </LinearLayout>
+
+                <!-- Do Not Disturb Options Section -->
+                <LinearLayout
+                    android:id="@+id/doNotDisturbOptionsSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:padding="2dp"
+                    android:background="@color/light_blue"
+                    android:layout_marginBottom="2dp">
+
+                    <!-- Start Time Block -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/start_time"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:layout_marginBottom="4dp" />
+
+                        <TimePicker
+                            android:id="@+id/startTimePicker"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:timePickerMode="spinner"
+                            android:layout_gravity="center_horizontal" />
+                    </LinearLayout>
+
+                    <!-- End Time Block -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/end_time"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:layout_marginBottom="4dp" />
+
+                        <TimePicker
+                            android:id="@+id/endTimePicker"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:timePickerMode="spinner"
+                            android:layout_gravity="center_horizontal" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Bottom Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gray" />
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

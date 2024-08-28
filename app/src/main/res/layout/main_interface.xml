@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/light1_gray"
+        android:orientation="vertical">
+
+        <!-- Контейнер для 'Розклад занять в ПУЕТ' -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:background="@color/blue_darker"
+                android:layout_height="?attr/actionBarSize">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/toolbar_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawablePadding="20dp"
+                        android:text="@string/schedule_title"
+                        android:textColor="@color/white"
+                        android:textSize="22sp"
+                        app:drawableStartCompat="@drawable/puet_logo" />
+
+                    <ImageButton
+                        android:id="@+id/settings_button"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:background="@color/blue_darker"
+                        android:contentDescription="@string/settings"
+                        android:paddingEnd="5dp"
+                        android:src="@drawable/gear_light_50"
+                        tools:ignore="RtlSymmetry" />
+
+                </LinearLayout>
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/light4_blue"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="0dp">
+
+                <!-- Контейнер для 'Оберіть параметри пошуку' -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    tools:ignore="UseCompoundDrawables">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/search"
+                        android:src="@drawable/search_30" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:textColor="@color/black"
+                        android:text="@string/select_search_parameters"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <!-- Контейнер для 'Початкова дата' -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:textSize="15sp"
+                            android:text="@string/start_date_label"
+                            android:labelFor="@id/startDate"
+                            android:contentDescription="@string/start_date_label" />
+
+                        <EditText
+                            android:id="@+id/startDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:autofillHints=""
+                            android:drawableStart="@drawable/calendar_32"
+                            android:drawablePadding="10dp"
+                            android:focusable="false"
+                            android:gravity="center"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:hint="@string/select_start_date"
+                            android:textSize="15sp"
+                            android:contentDescription="@string/start_date_picker"
+                            tools:ignore="ContentDescription" />
+                    </LinearLayout>
+
+                    <!-- Отступ между двумя LinearLayout -->
+                    <View
+                        android:layout_width="16dp"
+                        android:layout_height="match_parent" />
+
+                    <!-- Контейнер для 'Кінцева дата' -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:textSize="15sp"
+                            android:text="@string/end_date_label"
+                            android:contentDescription="@string/end_date_label" />
+
+                        <EditText
+                            android:id="@+id/endDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:autofillHints=""
+                            android:drawableStart="@drawable/calendar_32"
+                            android:drawablePadding="10dp"
+                            android:focusable="false"
+                            android:gravity="center"
+                            android:hint="@string/select_end_date"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="15sp"
+                            android:contentDescription="@string/end_date_picker"
+                            tools:ignore="ContentDescription" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Контейнер для 'Викладач' -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:text="@string/teacher_label"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/teachersNameAutoComplete"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:hint="@string/select_name_teacher"
+                            android:inputType="text"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="18sp" />
+
+                        <ImageButton
+                            android:id="@+id/clearButtonTeacherName"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:src="@drawable/cleaning_button"
+                            android:background="@color/light4_blue"
+                            android:visibility="gone"
+                            android:contentDescription="@string/clear_teacher_names" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Контейнер для 'Аудиторія' -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:textColor="@color/black"
+                        android:text="@string/room_label"
+                        android:textSize="18sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/classroomsNameAutoComplete"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:hint="@string/select_name_room"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:inputType="text"
+                            android:textSize="18sp" />
+
+                        <ImageButton
+                            android:id="@+id/clearButtonClassroomName"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:src="@drawable/cleaning_button"
+                            android:background="@color/light4_blue"
+                            android:visibility="gone"
+                            android:contentDescription="@string/clear_classroom_numbers" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Контейнер для 'Група' -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:text="@string/group_label"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/groupsNameAutoComplete"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:hint="@string/select_group"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:inputType="text"
+                            android:textSize="18sp" />
+
+                        <ImageButton
+                            android:id="@+id/clearButtonGroupName"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:src="@drawable/cleaning_button"
+                            android:background="@color/light4_blue"
+                            android:visibility="gone"
+                            android:contentDescription="@string/clear_group_numbers" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Чек-бокс 'Запам'ятати вибир' -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <CheckBox
+                        android:id="@+id/checkBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="start|center_vertical"
+                        android:text="@string/remember_selection"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+                <!-- Кнопка 'Пошук' -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/searchButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="@string/search"
+                    android:textSize="24sp"
+                    app:backgroundTint="@null"
+                    android:background="@drawable/button_selector" />
+
+                <!-- Контейнер для 'Расписания' -->
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/light_blue"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@id/searchButton"
+                    app:tabMode="scrollable" />
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/view_pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="0dp"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@id/tabs">
+                </androidx.viewpager2.widget.ViewPager2>
+
+                <!-- Контейнер для текста -->
+                <TextView
+                    android:id="@+id/infoBlock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:justificationMode="inter_word"
+                    android:padding="16dp"
+                    android:text="@string/Info"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:visibility="visible" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+</FrameLayout>
