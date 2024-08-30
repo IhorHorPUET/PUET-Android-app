@@ -45,7 +45,7 @@
 
                 <data
                     android:scheme="https"
-                    android:host="ihorhorpuet.github.io" />
+                    android:host="puetapp.online" />
             </intent-filter>
         </activity>
 
