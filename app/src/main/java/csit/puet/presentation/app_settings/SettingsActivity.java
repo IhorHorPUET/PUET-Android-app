@@ -27,13 +27,15 @@ public class SettingsActivity extends AppCompatActivity {
 
     SharedPreferences prefSet;
 
-    public static final String KEY_GOOGLE_ACCOUNT_SELECTION = "keyGoogleAccountSelection";
-    public static final String KEY_WIDGET_ENABLED = "keyWidgetEnabled";
-
     public static final String KEY_THEME = "keyTheme";
     public static final int THEME_SYSTEM = 0;
     public static final int THEME_LIGHT = 1;
     public static final int THEME_DARK = 2;
+
+    public static final String KEY_WIDGET_ENABLED = "keyWidgetEnabled";
+
+    public static final String KEY_GOOGLE_CALENDAR_ENABLED = "keyGoogleCalendarEnabled";
+    public static final String KEY_GOOGLE_ACCOUNT_SELECTION = "keyGoogleAccountSelection";
 
     private static final String KEY_DATE_RANGE_ENABLED = "keyDateRangeEnabled";
     private static final String KEY_DATE_RANGE = "keyDateRange";
@@ -53,12 +55,16 @@ public class SettingsActivity extends AppCompatActivity {
     private static final String KEY_DO_NOT_DISTURB_START_TIME = "keyDoNotDisturbStartTime";
     private static final String KEY_DO_NOT_DISTURB_END_TIME = "keyDoNotDisturbEndTime";
 
-    private CheckBox googleAccountSelectionCheckbox;
-    private CheckBox widgetCheckbox;
     private CheckBox chkBoxSystem;
     private CheckBox chkBoxLight;
     private CheckBox chkBoxDark;
     private int selectedTheme;
+
+    private CheckBox widgetCheckbox;
+
+    private LinearLayout googleCalendarSection;
+    private CheckBox googleCalendarCheckbox;
+    private CheckBox googleAccountSelectionCheckbox;
 
     private LinearLayout dateRangeSection;
     CheckBox dateRangeCheckbox;
@@ -100,7 +106,7 @@ public class SettingsActivity extends AppCompatActivity {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         Uri uri = result.getData().getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
                         if (uri != null) {
-                            soundUriString = uri.toString(); // Сохраняем строку URI выбранного звука
+                            soundUriString = uri.toString();
                         }
                     }
                 }
@@ -109,17 +115,20 @@ public class SettingsActivity extends AppCompatActivity {
         Button btnSave = findViewById(R.id.btnSave);
         Button btnCancel = findViewById(R.id.btnCancel);
 
-        googleAccountSelectionCheckbox = findViewById(R.id.googleAccountSelectionCheckbox);
-        widgetCheckbox = findViewById(R.id.widgetCheckbox);
-
         chkBoxSystem = findViewById(R.id.chkBoxSystem);
         chkBoxLight = findViewById(R.id.chkBoxLight);
         chkBoxDark = findViewById(R.id.chkBoxDark);
 
+        widgetCheckbox = findViewById(R.id.widgetCheckbox);
+
+        googleCalendarSection = findViewById(R.id.googleCalendarSection);
+        googleCalendarCheckbox = findViewById(R.id.googleCalendarCheckbox);
+        googleAccountSelectionCheckbox = findViewById(R.id.googleAccountSelectionCheckbox);
+
+        dateRangeSection = findViewById(R.id.dateRangeSection);
         dateRangeCheckbox = findViewById(R.id.dateRangeCheckbox);
         dateRangeSeekBar = findViewById(R.id.dateRangeSeekBar);
         dateRangeText = findViewById(R.id.dateRangeText);
-        dateRangeSection = findViewById(R.id.dateRangeSection);
 
         updateIntervalSection = findViewById(R.id.updateIntervalSection);
         autoUpdateCheckbox = findViewById(R.id.autoUpdateCheckbox);
@@ -168,13 +177,14 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         // Инициализация SharedPreferences
-        boolean isGoogleAccountSelectionEnabled = prefSet.getBoolean(KEY_GOOGLE_ACCOUNT_SELECTION, true);
-        googleAccountSelectionCheckbox.setChecked(isGoogleAccountSelectionEnabled);
+
+        selectedTheme = prefSet.getInt(KEY_THEME, THEME_SYSTEM);
 
         boolean isWidgetEnabled = prefSet.getBoolean(KEY_WIDGET_ENABLED, true);
         widgetCheckbox.setChecked(isWidgetEnabled);
 
-        selectedTheme = prefSet.getInt(KEY_THEME, THEME_SYSTEM);
+        boolean isGoogleCalendarEnabled = prefSet.getBoolean(KEY_GOOGLE_CALENDAR_ENABLED, false);
+        boolean isGoogleAccountSelectionEnabled = prefSet.getBoolean(KEY_GOOGLE_ACCOUNT_SELECTION, false);
 
         boolean dateRangeEnabled = prefSet.getBoolean(KEY_DATE_RANGE_ENABLED, false);
         int dateRange = prefSet.getInt(KEY_DATE_RANGE, 7);
@@ -247,6 +257,17 @@ public class SettingsActivity extends AppCompatActivity {
             selectedTheme = THEME_DARK;
             chkBoxSystem.setChecked(false);
             chkBoxLight.setChecked(false);
+        });
+
+        googleCalendarCheckbox.setChecked(isGoogleCalendarEnabled);
+        googleCalendarSection.setVisibility(isGoogleCalendarEnabled ? View.VISIBLE : View.GONE);
+        googleAccountSelectionCheckbox.setChecked(isGoogleAccountSelectionEnabled);
+
+        googleCalendarCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                googleCalendarSection.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            }
         });
 
         // Установим диапазон дат по умолчанию и обработаем изменение ползунка
@@ -389,13 +410,15 @@ public class SettingsActivity extends AppCompatActivity {
     private void saveSettings() {
         SharedPreferences.Editor editor = prefSet.edit();
 
-        boolean isGoogleAccountSelectionEnabled = googleAccountSelectionCheckbox.isChecked();
-        editor.putBoolean(KEY_GOOGLE_ACCOUNT_SELECTION, isGoogleAccountSelectionEnabled);
+        editor.putInt(KEY_THEME, selectedTheme);
 
         boolean isWidgetEnabled = widgetCheckbox.isChecked();
         editor.putBoolean(KEY_WIDGET_ENABLED, isWidgetEnabled);
 
-        editor.putInt(KEY_THEME, selectedTheme);
+        boolean isGoogleCalendarEnabled = googleCalendarCheckbox.isChecked();
+        editor.putBoolean(KEY_GOOGLE_CALENDAR_ENABLED, isGoogleCalendarEnabled);
+        boolean isGoogleAccountSelectionEnabled = googleAccountSelectionCheckbox.isChecked();
+        editor.putBoolean(KEY_GOOGLE_ACCOUNT_SELECTION, isGoogleAccountSelectionEnabled);
 
         boolean isDateRangeEnabled = dateRangeCheckbox.isChecked();
         editor.putBoolean(KEY_DATE_RANGE_ENABLED, isDateRangeEnabled);

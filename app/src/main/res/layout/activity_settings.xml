@@ -68,42 +68,7 @@
                 android:layout_height="2dp"
                 android:background="@color/gray" />
 
-            <!-- Google Account Selection Checkbox -->
-            <CheckBox
-                android:id="@+id/googleAccountSelectionCheckbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/select_google_account_on_start"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:layout_marginStart="8dp"
-                android:checked="true" />
-
-            <!-- Divider -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/gray" />
-
-            <!-- Widget Checkbox -->
-
-            <CheckBox
-                android:id="@+id/widgetCheckbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/using_widget"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:layout_marginStart="8dp"
-                android:checked="false" />
-
-            <!-- Bottom Divider -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/gray" />
-
-            <!-- Theme Selection Section -->
+                 <!-- Theme Selection Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -155,6 +120,119 @@
                     android:background="@color/gray" />
 
             </LinearLayout>
+
+            <!-- Widget Checkbox -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="2dp"
+                android:background="@color/light_blue"
+                android:layout_marginBottom="2dp">
+
+                <CheckBox
+                    android:id="@+id/widgetCheckbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="2dp"
+                    android:contentDescription="@string/using_widget_title"
+                    android:layout_gravity="start" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"
+                    android:text="@string/using_widget"
+                    android:layout_marginStart="2dp" />
+            </LinearLayout>
+
+            <!-- Bottom Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray" />
+
+            <!-- Google Calendar Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="2dp"
+                android:background="@color/light_blue"
+                android:layout_marginBottom="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <CheckBox
+                        android:id="@+id/googleCalendarCheckbox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="@string/google_calendar_section"
+                        android:layout_gravity="start" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="20sp"
+                        android:textColor="@color/black"
+                        android:text="@string/google_calendar_section_title"
+                        android:layout_marginVertical="2dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/googleCalendarSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:padding="0dp"
+                    android:background="@color/light_blue"
+                    android:layout_marginBottom="2dp">
+
+                    <!-- Google Account Selection Checkbox -->
+                        <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="0dp"
+                        android:background="@color/light_blue"
+                        android:layout_marginBottom="2dp">
+
+                        <CheckBox
+                            android:id="@+id/googleAccountSelectionCheckbox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:contentDescription="@string/select_google_account_on_start"
+                            android:layout_gravity="start" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:text="@string/select_google_account_on_start"
+                            android:layout_marginStart="2dp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+                <!-- Bottom Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gray" />
 
             <!-- Date Range Selection Section -->
             <LinearLayout
@@ -386,23 +464,58 @@
                     android:background="@color/light_blue"
                     android:layout_marginBottom="2dp">
 
-                    <CheckBox
-                        android:id="@+id/textMessageCheckbox"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/text_message"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"
-                        android:layout_marginStart="8dp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="0dp"
+                        android:background="@color/light_blue"
+                        android:layout_marginBottom="2dp">
 
-                    <CheckBox
-                        android:id="@+id/vibrationCheckbox"
-                        android:layout_width="wrap_content"
+                        <CheckBox
+                            android:id="@+id/textMessageCheckbox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:contentDescription="@string/text_message"
+                            android:layout_gravity="start" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:text="@string/text_message"
+                            android:layout_marginStart="2dp" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/Vibration"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"
-                        android:layout_marginStart="8dp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="0dp"
+                        android:background="@color/light_blue"
+                        android:layout_marginBottom="2dp">
+
+                        <CheckBox
+                            android:id="@+id/vibrationCheckbox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:contentDescription="@string/Vibration"
+                            android:layout_gravity="start" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:text="@string/Vibration"
+                            android:layout_marginStart="2dp" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -410,23 +523,42 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
 
-                        <CheckBox
-                            android:id="@+id/soundCheckbox"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/Sound"
-                            android:textColor="@color/black"
-                            android:textSize="16sp"
-                            android:layout_marginStart="8dp" />
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:padding="0dp"
+                            android:background="@color/light_blue"
+                            android:layout_marginBottom="2dp">
 
-                        <Button
-                            android:id="@+id/selectSoundButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/select_sound"
-                            android:backgroundTint="@color/light_gray"
-                            android:textColor="@color/black"
-                            android:layout_marginStart="16dp"/>
+                            <CheckBox
+                                android:id="@+id/soundCheckbox"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:contentDescription="@string/Sound"
+                                android:layout_gravity="start" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textSize="16sp"
+                                android:textColor="@color/black"
+                                android:text="@string/Sound"
+                                android:layout_marginStart="2dp" />
+
+                            <Button
+                                android:id="@+id/selectSoundButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/select_sound"
+                                android:layout_marginEnd="80dp"
+                                android:layout_gravity="start"
+                                android:backgroundTint="@color/light_gray"
+                                android:textColor="@color/black"/>
+                        </LinearLayout>
                     </LinearLayout>
 
                     <TextView
@@ -627,8 +759,6 @@
                     android:layout_height="1dp"
                     android:background="@color/gray" />
             </LinearLayout>
-
-
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

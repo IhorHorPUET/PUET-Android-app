@@ -58,14 +58,18 @@
     <string name="save"> Зберегти </string>
     <string name="cancel">Скасувати</string>
 
-    <string name="select_google_account_on_start">Вибір аккаунту Google при старті</string>
-    <string name="using_widget">Використання віджету</string>
-
     <string name="Choose_Theme">Тема оформлення</string>
     <string name="theme_switch">Тема оформлення</string>
     <string name="As_System">Системна</string>
     <string name="Always_Light">Завжди світла</string>
     <string name="Always_Dark">Завжди темна</string>
+
+    <string name="using_widget">Використання віджету</string>
+    <string name="using_widget_title">Використання віджету для розкладу</string>
+
+    <string name="google_calendar_section">Використання календарю Google</string>
+    <string name="google_calendar_section_title">Використання календарю Google</string>
+    <string name="select_google_account_on_start">Вибір аккаунту Google при старті</string>
 
     <string name="Choose_Date_Range">Вибір діапазону дат у календарі</string>
     <string name="date_range_seekbar">Кількість днів між початковую та кінцевою датами</string>
@@ -102,5 +106,7 @@
     <string name="_00_01">00:00</string>
     <string name="new_lessons">Новий розклад:</string>
     <string name="old_lessons">Старий розклад:</string>
+    <string name="google_accaunt_selection">Вибирати аккаунт Google при старті</string>
+
 
 </resources>
