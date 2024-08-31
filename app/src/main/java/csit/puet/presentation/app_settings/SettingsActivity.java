@@ -176,9 +176,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        // Инициализация SharedPreferences
-
-        selectedTheme = prefSet.getInt(KEY_THEME, THEME_SYSTEM);
+         selectedTheme = prefSet.getInt(KEY_THEME, THEME_SYSTEM);
 
         boolean isWidgetEnabled = prefSet.getBoolean(KEY_WIDGET_ENABLED, true);
         widgetCheckbox.setChecked(isWidgetEnabled);
@@ -206,19 +204,16 @@ public class SettingsActivity extends AppCompatActivity {
         int startTime = prefSet.getInt(KEY_DO_NOT_DISTURB_START_TIME, 1320); // Default 22:00 (1320 minutes)
         int endTime = prefSet.getInt(KEY_DO_NOT_DISTURB_END_TIME, 480); // Default 08:00 (480 minutes)
 
-        // Разбиваем минуты на часы и минуты
         int startHour = startTime / 60;
         int startMinute = startTime % 60;
         int endHour = endTime / 60;
         int endMinute = endTime % 60;
 
-        // Установка времени для TimePicker'ов
         startTimePicker.setHour(startHour);
         startTimePicker.setMinute(startMinute);
         endTimePicker.setHour(endHour);
         endTimePicker.setMinute(endMinute);
 
-        // Установим выбранный чекбокс в зависимости от сохраненной темы
         switch (selectedTheme) {
             case THEME_SYSTEM:
                 chkBoxSystem.setChecked(true);
@@ -231,7 +226,6 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
         }
 
-        // Обработка выбора темы
         chkBoxSystem.setOnClickListener(v -> {
             if (!chkBoxSystem.isChecked()) {
                 chkBoxSystem.setChecked(true);
@@ -270,7 +264,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        // Установим диапазон дат по умолчанию и обработаем изменение ползунка
         dateRangeSeekBar.setProgress(dateRange - 1);
         dateRangeText.setText(getString(R.string.date_range, dateRange));
         dateRangeSection.setVisibility(dateRangeEnabled ? View.VISIBLE : View.GONE);
@@ -299,7 +292,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        // Установим состояние чекбокса и значение ползунка для автообновления
         autoUpdateCheckbox.setChecked(autoUpdate);
         updateIntervalSeekBar.setProgress(updateInterval - 1);
         updateIntervalValue.setText(getString(R.string.update_interval, updateInterval));
@@ -329,7 +321,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        // Установим состояние чекбоксов и сикбара для уведомлений
         notificationCheckbox.setChecked(notificationsEnabled);
         textMessageCheckbox.setChecked(isTextMessageEnabled);
         vibrationCheckbox.setChecked(vibrationEnabled);
@@ -380,7 +371,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        // Устанавливаем обработчик нажатия на кнопку
         selectSoundButton.setOnClickListener(v -> {
             Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);

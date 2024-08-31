@@ -115,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
 
         mCredential = GoogleAccountCredential.usingOAuth2(this, Collections.singleton(CalendarScopes.CALENDAR));
 
-        // Инициализация лаунчера для выбора аккаунта
         accountPickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -144,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
             calendarHelper = null;
         }
 
-        // Инициализация лаунчера для SettingsActivity
         settingsActivityLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {

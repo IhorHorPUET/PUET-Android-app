@@ -58,7 +58,7 @@ public class GoogleCalendarHelper {
         }
         if (location == null || location.isEmpty()) {
             Log.w(TAG, "Event location is null or empty, setting to 'Unknown location'");
-            location = "Unknown location";  // задаем значение по умолчанию
+            location = "Unknown location";
         }
         if (description == null) {
             Log.w(TAG, "Event description is null, setting to an empty string");
@@ -162,7 +162,6 @@ public class GoogleCalendarHelper {
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    // Handle dialog click
                                 }
                             })
                             .create();
@@ -178,7 +177,6 @@ public class GoogleCalendarHelper {
             String location = lesson.getRoom();
             String description = "Тип: " + lesson.getLessonType() + "\nГруппа: " + lesson.getGroup() + "\nПреподаватель: " + lesson.getTeacher();
 
-            // Преобразуем дату и время начала/окончания занятия
             DateTime startDateTime = convertLessonToDateTime(lesson, true);
             DateTime endDateTime = convertLessonToDateTime(lesson, false);
 
@@ -193,18 +191,16 @@ public class GoogleCalendarHelper {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
             LocalDate localDate = LocalDate.parse(lesson.getDate(), formatter);
 
-            // Задаем время начала и окончания занятий
-            int hour = 8; // Пример, можно использовать соответствие с lesson.getNum()
+             int hour = 8;
             int minute = 0;
             if (lesson.getNum() == 2) {
                 hour = 10;
             } else if (lesson.getNum() == 3) {
                 hour = 12;
             }
-            // Другие временные слоты могут быть добавлены здесь
 
             if (!isStart) {
-                hour += 1; // Продолжительность урока, например, 1 час
+                hour += 1;
             }
 
             LocalDateTime localDateTime = LocalDateTime.of(localDate, LocalTime.of(hour, minute));

@@ -28,6 +28,7 @@ import java.util.Locale;
 import java.text.ParseException;
 
 import csit.puet.data.model.Lesson;
+
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -146,31 +147,24 @@ public class PresentationUtils {
     }
 
     public static void updateDatesFromPreferences(Context context, CalendarManager calendarManager, TextView startDateTextView, TextView endDateTextView) {
-        // Загрузите сохраненные данные о диапазоне дат из SharedPreferences
         SharedPreferences preferences = context.getSharedPreferences("AppSettingsPrefs", Context.MODE_PRIVATE);
         int dateRange = preferences.getInt("keyDateRange", 7);
 
-        // Обновите конечную дату на основе текущей даты плюс диапазон дат
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.add(Calendar.DAY_OF_MONTH, dateRange);
 
-        // Установите начальную и конечную дату в CalendarManager
         startDateTextView.setText(calendarManager.formatDate(calendarManager.getSelectedStartDate()));
         endDateTextView.setText(calendarManager.formatDate(endCalendar));
 
-        // Обновите данные в CalendarManager
         calendarManager.getSelectedEndDate().setTime(endCalendar.getTime());
     }
 
     public static String formatScheduleForWidget(Context context, List<Lesson> schedulesForWidget) {
-        // Загрузка времени последней синхронизации из SharedPreferences
         SharedPreferences preferences = context.getSharedPreferences("ServerDataPrefs", Context.MODE_PRIVATE);
         final String KEY_LAST_SYNC_TIME = "keyLastSyncTime";
         String lastSyncTime = preferences.getString(KEY_LAST_SYNC_TIME, "Немає даних про останню синхронізацію");
 
         StringBuilder scheduleStringBuilder = new StringBuilder();
-
-        // Добавляем строку с последним временем синхронизации
         scheduleStringBuilder.append("<div style='text-align:center;'>")
                 .append("<font color='#FF9800'>")
                 .append("<b>")

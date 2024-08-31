@@ -84,14 +84,13 @@ public class ScheduleSync extends Worker {
                 newLessons.addAll(data);
                 newLessons = DataUtils.sortLessonsList(newLessons);
 
-                // Используем Future, чтобы дождаться завершения работы в executor
                 Future<?> future = executor.submit(() -> {
                     dataManager.saveLessonsListToDatabase(newLessons);
                     oldLessons = dataManager.getLessonsListFromDatabase();
                 });
 
                 try {
-                    future.get(); // Этот вызов блокирует выполнение до завершения задачи в executor
+                    future.get();
                 } catch (InterruptedException | ExecutionException e) {
                     success = false;
                 }
@@ -200,7 +199,6 @@ public class ScheduleSync extends Worker {
             scheduleData = PresentationUtils.formatScheduleForWidget(context, newLessonsFirst);
         }
 
-        // Отправляем данные на виджет
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         ComponentName thisWidget = new ComponentName(context, ScheduleWidgetProvider.class);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);

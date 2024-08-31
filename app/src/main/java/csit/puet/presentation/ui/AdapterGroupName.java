@@ -99,16 +99,15 @@ public class AdapterGroupName extends ArrayAdapter<Group> {
                 if (isChecked) {
                     if (!selectedGroups.contains(group)) {
                         selectedGroups.add(group);
-                        groupBands.add(group.getGroupBand()); // Добавляем данные группы в список groupBands
+                        groupBands.add(group.getGroupBand());
                     }
                 } else {
                     selectedGroups.remove(group);
-                    groupBands.remove(group.getGroupBand()); // Удаляем данные группы из списка groupBands
+                    groupBands.remove(group.getGroupBand());
                 }
 
             });
         }
-
         return convertView;
     }
 
@@ -118,12 +117,12 @@ public class AdapterGroupName extends ArrayAdapter<Group> {
     }
 
     public void clearSelectedGroups() {
-        selectedGroups.clear(); // Очищаем список
-        groupBands.clear(); // Очищаем также список groupBands
-        notifyDataSetChanged();  // Уведомляем об изменении данных, чтобы обновить представление
+        selectedGroups.clear();
+        groupBands.clear();
+        notifyDataSetChanged();
     }
 
     public List<Group> getSelectedGroups() {
-        return new ArrayList<>(selectedGroups); // Возвращаем копию списка для безопасности
+        return new ArrayList<>(selectedGroups);
     }
 }
