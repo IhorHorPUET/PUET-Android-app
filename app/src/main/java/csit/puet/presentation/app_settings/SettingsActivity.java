@@ -258,7 +258,8 @@ public class SettingsActivity extends AppCompatActivity {
         dateRangeText.setText(getString(R.string.date_range, dateRange));
         dateRangeCheckbox.setChecked(dateRangeEnabled);
 
-        dateRangeCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> dateRangeSection.setVisibility(isChecked ? View.VISIBLE : View.GONE));
+        dateRangeCheckbox.setOnCheckedChangeListener((buttonView, isChecked) ->
+                dateRangeSection.setVisibility(isChecked ? View.VISIBLE : View.GONE));
 
         dateRangeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -281,7 +282,8 @@ public class SettingsActivity extends AppCompatActivity {
         autoUpdateIntervalSeekBar.setProgress(updateInterval - 1);
         autoUpdateIntervalValue.setText(getString(R.string.update_interval, updateInterval));
 
-        autoUpdateCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> autoUpdateSection.setVisibility(isChecked ? View.VISIBLE : View.GONE));
+        autoUpdateCheckbox.setOnCheckedChangeListener((buttonView, isChecked) ->
+                autoUpdateSection.setVisibility(isChecked ? View.VISIBLE : View.GONE));
 
         autoUpdateIntervalSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -309,7 +311,8 @@ public class SettingsActivity extends AppCompatActivity {
         notificationIntervalSeekBar.setProgress(notificationInterval - 15);
         notificationIntervalValue.setText(getString(R.string.notification_interval, notificationInterval));
 
-        notificationCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> notificationOptionsSection.setVisibility(isChecked ? View.VISIBLE : View.GONE));
+        notificationCheckbox.setOnCheckedChangeListener((buttonView, isChecked) ->
+                notificationOptionsSection.setVisibility(isChecked ? View.VISIBLE : View.GONE));
 
         notificationRepeatSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -361,7 +364,8 @@ public class SettingsActivity extends AppCompatActivity {
         doNotDisturbCheckbox.setChecked(doNotDisturbEnabled);
 
         // Handle checkbox changes
-        doNotDisturbCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> doNotDisturbOptionsSection.setVisibility(isChecked ? View.VISIBLE : View.GONE));
+        doNotDisturbCheckbox.setOnCheckedChangeListener((buttonView, isChecked) ->
+                doNotDisturbOptionsSection.setVisibility(isChecked ? View.VISIBLE : View.GONE));
 
         int startHour = startTime / 60;
         int startMinute = startTime % 60;
