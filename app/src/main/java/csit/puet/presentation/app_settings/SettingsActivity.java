@@ -71,10 +71,10 @@ public class SettingsActivity extends AppCompatActivity {
     private SeekBar dateRangeSeekBar;
     private TextView dateRangeText;
 
-    private LinearLayout updateIntervalSection;
+    private LinearLayout autoUpdateSection;
     CheckBox autoUpdateCheckbox;
-    private SeekBar updateIntervalSeekBar;
-    private TextView updateIntervalValue;
+    private SeekBar autoUpdateIntervalSeekBar;
+    private TextView autoUpdateIntervalValue;
 
     private ActivityResultLauncher<Intent> ringtonePickerLauncher;
     private LinearLayout notificationOptionsSection;
@@ -130,10 +130,10 @@ public class SettingsActivity extends AppCompatActivity {
         dateRangeSeekBar = findViewById(R.id.dateRangeSeekBar);
         dateRangeText = findViewById(R.id.dateRangeText);
 
-        updateIntervalSection = findViewById(R.id.updateIntervalSection);
+        autoUpdateSection = findViewById(R.id.updateIntervalSection);
         autoUpdateCheckbox = findViewById(R.id.autoUpdateCheckbox);
-        updateIntervalSeekBar = findViewById(R.id.updateIntervalSeekBar);
-        updateIntervalValue = findViewById(R.id.updateIntervalValue);
+        autoUpdateIntervalSeekBar = findViewById(R.id.updateIntervalSeekBar);
+        autoUpdateIntervalValue = findViewById(R.id.updateIntervalValue);
 
         notificationOptionsSection = findViewById(R.id.notificationOptionsSection);
         notificationCheckbox = findViewById(R.id.notificationCheckbox);
@@ -176,7 +176,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-         selectedTheme = prefSet.getInt(KEY_THEME, THEME_SYSTEM);
+        selectedTheme = prefSet.getInt(KEY_THEME, THEME_SYSTEM);
 
         boolean isWidgetEnabled = prefSet.getBoolean(KEY_WIDGET_ENABLED, true);
         widgetCheckbox.setChecked(isWidgetEnabled);
@@ -203,16 +203,6 @@ public class SettingsActivity extends AppCompatActivity {
         doNotDisturbOptionsSection.setVisibility(doNotDisturbEnabled ? View.VISIBLE : View.GONE);
         int startTime = prefSet.getInt(KEY_DO_NOT_DISTURB_START_TIME, 1320); // Default 22:00 (1320 minutes)
         int endTime = prefSet.getInt(KEY_DO_NOT_DISTURB_END_TIME, 480); // Default 08:00 (480 minutes)
-
-        int startHour = startTime / 60;
-        int startMinute = startTime % 60;
-        int endHour = endTime / 60;
-        int endMinute = endTime % 60;
-
-        startTimePicker.setHour(startHour);
-        startTimePicker.setMinute(startMinute);
-        endTimePicker.setHour(endHour);
-        endTimePicker.setMinute(endMinute);
 
         switch (selectedTheme) {
             case THEME_SYSTEM:
@@ -253,20 +243,20 @@ public class SettingsActivity extends AppCompatActivity {
             chkBoxLight.setChecked(false);
         });
 
-        googleCalendarCheckbox.setChecked(isGoogleCalendarEnabled);
         googleCalendarSection.setVisibility(isGoogleCalendarEnabled ? View.VISIBLE : View.GONE);
+        googleCalendarCheckbox.setChecked(isGoogleCalendarEnabled);
         googleAccountSelectionCheckbox.setChecked(isGoogleAccountSelectionEnabled);
 
-        googleCalendarCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                googleCalendarSection.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+        googleCalendarCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            googleCalendarSection.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            if (!isChecked) {
+                googleAccountSelectionCheckbox.setChecked(false);
             }
         });
 
+        dateRangeSection.setVisibility(dateRangeEnabled ? View.VISIBLE : View.GONE);
         dateRangeSeekBar.setProgress(dateRange - 1);
         dateRangeText.setText(getString(R.string.date_range, dateRange));
-        dateRangeSection.setVisibility(dateRangeEnabled ? View.VISIBLE : View.GONE);
         dateRangeCheckbox.setChecked(dateRangeEnabled);
 
         dateRangeCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -292,24 +282,23 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        autoUpdateSection.setVisibility(autoUpdate ? View.VISIBLE : View.GONE);
         autoUpdateCheckbox.setChecked(autoUpdate);
-        updateIntervalSeekBar.setProgress(updateInterval - 1);
-        updateIntervalValue.setText(getString(R.string.update_interval, updateInterval));
-
-        updateIntervalSection.setVisibility(autoUpdate ? View.VISIBLE : View.GONE);
+        autoUpdateIntervalSeekBar.setProgress(updateInterval - 1);
+        autoUpdateIntervalValue.setText(getString(R.string.update_interval, updateInterval));
 
         autoUpdateCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                updateIntervalSection.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                autoUpdateSection.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             }
         });
 
-        updateIntervalSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        autoUpdateIntervalSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 int hours = progress + 1;
-                updateIntervalValue.setText(getString(R.string.update_interval, hours));
+                autoUpdateIntervalValue.setText(getString(R.string.update_interval, hours));
             }
 
             @Override
@@ -321,6 +310,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        notificationOptionsSection.setVisibility(notificationsEnabled ? View.VISIBLE : View.GONE);
         notificationCheckbox.setChecked(notificationsEnabled);
         textMessageCheckbox.setChecked(isTextMessageEnabled);
         vibrationCheckbox.setChecked(vibrationEnabled);
@@ -329,8 +319,6 @@ public class SettingsActivity extends AppCompatActivity {
         notificationRepeatValue.setText(getString(R.string.notification_repeat, notificationRepeat));
         notificationIntervalSeekBar.setProgress(notificationInterval - 15);
         notificationIntervalValue.setText(getString(R.string.notification_interval, notificationInterval));
-
-        notificationOptionsSection.setVisibility(notificationsEnabled ? View.VISIBLE : View.GONE);
 
         notificationCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -385,8 +373,8 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         // Set the checkbox state and visibility
-        doNotDisturbCheckbox.setChecked(doNotDisturbEnabled);
         doNotDisturbOptionsSection.setVisibility(doNotDisturbEnabled ? View.VISIBLE : View.GONE);
+        doNotDisturbCheckbox.setChecked(doNotDisturbEnabled);
 
         // Handle checkbox changes
         doNotDisturbCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -395,6 +383,16 @@ public class SettingsActivity extends AppCompatActivity {
                 doNotDisturbOptionsSection.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             }
         });
+
+        int startHour = startTime / 60;
+        int startMinute = startTime % 60;
+        int endHour = endTime / 60;
+        int endMinute = endTime % 60;
+
+        startTimePicker.setHour(startHour);
+        startTimePicker.setMinute(startMinute);
+        endTimePicker.setHour(endHour);
+        endTimePicker.setMinute(endMinute);
     }
 
     private void saveSettings() {
@@ -417,7 +415,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         boolean isAutoUpdateEnabled = autoUpdateCheckbox.isChecked();
         editor.putBoolean(KEY_UPDATE_ENABLED, isAutoUpdateEnabled);
-        int updateInterval = updateIntervalSeekBar.getProgress() + 1;
+        int updateInterval = autoUpdateIntervalSeekBar.getProgress() + 1;
         editor.putInt(KEY_UPDATE_INTERVAL, updateInterval);
 
         boolean isNotificationsEnabled = notificationCheckbox.isChecked();
