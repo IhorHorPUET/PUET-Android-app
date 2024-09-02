@@ -1,6 +1,7 @@
 package csit.puet.presentation.app_settings;
 
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -13,15 +14,30 @@ import android.widget.TimePicker;
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import csit.puet.AppConstants;
+
+import android.Manifest;
+
 import csit.puet.R;
 import csit.puet.presentation.ui.PresentationUtils;
 
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.services.calendar.CalendarScopes;
+
+import android.accounts.AccountManager;
+import android.widget.Toast;
+
+import java.util.Collections;
+
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -37,7 +53,9 @@ public class SettingsActivity extends AppCompatActivity {
     private LinearLayout googleCalendarSection;
     private CheckBox googleCalendarCheckbox;
     private TextView googleAccountTextView;
-    private CheckBox googleAccountSelectionCheckbox;
+    private String googleAccountName;
+    private ActivityResultLauncher<Intent> accountPickerLauncher;
+    private GoogleAccountCredential mCredential;
 
     private LinearLayout dateRangeSection;
     CheckBox dateRangeCheckbox;
@@ -99,7 +117,7 @@ public class SettingsActivity extends AppCompatActivity {
         googleCalendarSection = findViewById(R.id.googleCalendarSection);
         googleCalendarCheckbox = findViewById(R.id.googleCalendarCheckbox);
         googleAccountTextView = findViewById(R.id.googleAccountTextView);
-        googleAccountSelectionCheckbox = findViewById(R.id.googleAccountSelectionCheckbox);
+        Button googleAccountButton = findViewById(R.id.googleAccountButton);
 
         dateRangeSection = findViewById(R.id.dateRangeSection);
         dateRangeCheckbox = findViewById(R.id.dateRangeCheckbox);
@@ -157,9 +175,19 @@ public class SettingsActivity extends AppCompatActivity {
         boolean isWidgetEnabled = prefSet.getBoolean(AppConstants.KEY_WIDGET_ENABLED, true);
         widgetCheckbox.setChecked(isWidgetEnabled);
 
-        boolean isGoogleCalendarEnabled = prefSet.getBoolean(AppConstants.KEY_GOOGLE_CALENDAR_ENABLED, false);
-        String googleAccountName = prefSet.getString(AppConstants.KEY_GOOGLE_ACCOUNT_NAME, null);
-        boolean isGoogleAccountSelectionEnabled = prefSet.getBoolean(AppConstants.KEY_GOOGLE_ACCOUNT_SELECTION, false);
+        boolean isGoogleCalendarEnabled;
+        if (ContextCompat.checkSelfPermission
+                (this, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+            isGoogleCalendarEnabled = prefSet.getBoolean(AppConstants.KEY_GOOGLE_CALENDAR_ENABLED, false);
+            googleAccountName = prefSet.getString(AppConstants.KEY_GOOGLE_ACCOUNT_NAME, null);
+        } else {
+            isGoogleCalendarEnabled = false;
+            googleAccountName = null;
+        }
+        mCredential = GoogleAccountCredential.usingOAuth2(this, Collections.singleton(CalendarScopes.CALENDAR));
+        boolean isCalendarPermissionRevocationShown = prefSet.getBoolean
+                (AppConstants.KEY_CALENDAR_PERMISSION_REVOCATION_SHOWN, false);
+
 
         boolean dateRangeEnabled = prefSet.getBoolean(AppConstants.KEY_DATE_RANGE_ENABLED, false);
         int dateRange = prefSet.getInt(AppConstants.KEY_DATE_RANGE_INTERVAL, 7);
@@ -222,20 +250,42 @@ public class SettingsActivity extends AppCompatActivity {
 
         googleCalendarSection.setVisibility(isGoogleCalendarEnabled ? View.VISIBLE : View.GONE);
         googleCalendarCheckbox.setChecked(isGoogleCalendarEnabled);
-        googleAccountSelectionCheckbox.setChecked(isGoogleAccountSelectionEnabled);
+
+        googleCalendarCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            googleCalendarSection.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+        });
+
+        googleAccountButton.setOnClickListener(v -> {
+            PresentationUtils.vibrate(this, 40);
+            requestCalendarPermission();
+        });
 
         if (googleAccountName != null) {
-            googleAccountTextView.setText(getString(R.string.selected_account, googleAccountName));
+            googleAccountTextView.setText(googleAccountName);
         } else {
             googleAccountTextView.setText(R.string.no_account_selected);
         }
 
-        googleCalendarCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            googleCalendarSection.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-            if (!isChecked) {
-                googleAccountSelectionCheckbox.setChecked(false);
-            }
-        });
+        accountPickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null && result.getData().getExtras() != null) {
+                        googleAccountName = result.getData().getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                        if (googleAccountName != null) {
+                            mCredential.setSelectedAccountName(googleAccountName);
+                            googleAccountTextView.setText(googleAccountName);
+                        }
+                    } else {
+                        if (googleAccountName == null) {
+                            Toast.makeText(this, "Аккаунт не обрано", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
+
+        if (googleAccountName != null) {
+            mCredential.setSelectedAccountName(googleAccountName);
+        }
 
         dateRangeSection.setVisibility(dateRangeEnabled ? View.VISIBLE : View.GONE);
         dateRangeCheckbox.setChecked(dateRangeEnabled);
@@ -371,9 +421,26 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putBoolean(AppConstants.KEY_WIDGET_ENABLED, isWidgetEnabled);
 
         boolean isGoogleCalendarEnabled = googleCalendarCheckbox.isChecked();
+        if (!isGoogleCalendarEnabled || googleAccountName == null || ContextCompat.checkSelfPermission
+                (this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            isGoogleCalendarEnabled = false;
+            googleAccountName = null;
+            googleAccountTextView.setText(R.string.no_account_selected);
+            mCredential.setSelectedAccountName(null);
+            if (ContextCompat.checkSelfPermission(
+                    this, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+                editor.putBoolean(AppConstants.KEY_CALENDAR_PERMISSION_REVOCATION_SHOWN, true);
+            }
+//            // Удаление всех событий из календаря
+//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
+//                    == PackageManager.PERMISSION_GRANTED) {
+//                mCredential = GoogleAccountCredential.usingOAuth2(this, Collections.singleton(CalendarScopes.CALENDAR));
+//                // Здесь можно вызвать метод, который удалит все события из календаря, если это необходимо
+//                // Например: calendarHelper.removeAllProgramEventsFromCalendar();
+//            }
+        }
         editor.putBoolean(AppConstants.KEY_GOOGLE_CALENDAR_ENABLED, isGoogleCalendarEnabled);
-        boolean isGoogleAccountSelectionEnabled = googleAccountSelectionCheckbox.isChecked();
-        editor.putBoolean(AppConstants.KEY_GOOGLE_ACCOUNT_SELECTION, isGoogleAccountSelectionEnabled);
+        editor.putString(AppConstants.KEY_GOOGLE_ACCOUNT_NAME, googleAccountName);
 
         boolean isDateRangeEnabled = dateRangeCheckbox.isChecked();
         editor.putBoolean(AppConstants.KEY_DATE_RANGE_ENABLED, isDateRangeEnabled);
@@ -408,5 +475,36 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putInt(AppConstants.KEY_DO_NOT_DISTURB_END_TIME, endTime);
 
         editor.apply();
+    }
+
+    private void requestCalendarPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_CALENDAR},
+                    AppConstants.REQUEST_CALENDAR_PERMISSION);
+        } else {
+            launchAccountPicker();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == AppConstants.REQUEST_CALENDAR_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                launchAccountPicker();
+            } else {
+                Toast.makeText(this, "Потрібно надати дозвіл для використання календаря",
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private void launchAccountPicker() {
+        Intent accountPickerIntent = mCredential.newChooseAccountIntent();
+        accountPickerLauncher.launch(accountPickerIntent);
     }
 }

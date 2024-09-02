@@ -1,14 +1,11 @@
 package csit.puet;
 
-import android.Manifest;
-import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Html;
@@ -26,7 +23,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
 import androidx.work.BackoffPolicy;
@@ -39,14 +35,12 @@ import androidx.work.WorkRequest;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.services.calendar.CalendarScopes;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -97,11 +91,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean autoLoadSchedules = true;
     private boolean searchParametersCheckBox = true;
 
-    private ActivityResultLauncher<Intent> accountPickerLauncher;
-    private GoogleAccountCredential mCredential;
-    private GoogleCalendarHelper calendarHelper;
-    private String googleAccountName;
-
     private ActivityResultLauncher<Intent> settingsActivityLauncher;
     SharedPreferences prefSet;
 
@@ -112,41 +101,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main_interface);
         prefSet = this.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
         prefData = this.getSharedPreferences(AppConstants.PREF_DATA, Context.MODE_PRIVATE);
-
-        mCredential = GoogleAccountCredential.usingOAuth2(this, Collections.singleton(CalendarScopes.CALENDAR));
-
-        accountPickerLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null && result.getData().getExtras() != null) {
-                        googleAccountName = result.getData().getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-                        if (googleAccountName != null) {
-                            mCredential.setSelectedAccountName(googleAccountName);
-                            SharedPreferences.Editor editor = prefData.edit();
-                            editor.putString(AppConstants.KEY_GOOGLE_ACCOUNT_NAME, googleAccountName);
-                            editor.apply();
-                            calendarHelper = new GoogleCalendarHelper(this, mCredential);
-                        }
-                    } else {
-                        // Если пользователь не выбрал аккаунт, сбрасываем настройку "Використання календарю"
-                        SharedPreferences.Editor editor = prefSet.edit();
-                        editor.putBoolean(AppConstants.KEY_GOOGLE_CALENDAR_ENABLED, false);
-                        editor.apply();
-                    }
-                }
-        );
-
-        googleAccountName = prefData.getString(AppConstants.KEY_GOOGLE_ACCOUNT_NAME, null);
-        boolean shouldPromptAccountSelection = prefSet.getBoolean(AppConstants.KEY_GOOGLE_ACCOUNT_SELECTION, true);
-
-        if (shouldPromptAccountSelection) {
-            accountPickerLauncher.launch(mCredential.newChooseAccountIntent());
-        } else if (googleAccountName != null) {
-            mCredential.setSelectedAccountName(googleAccountName);
-            calendarHelper = new GoogleCalendarHelper(this, mCredential);
-        } else {
-            calendarHelper = null;
-        }
 
         settingsActivityLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -393,59 +347,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults); // Вызов родительского метода
-
-        if (requestCode == AppConstants.PERMISSIONS_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Разрешение предоставлено, запускаем выбор аккаунта
-                accountPickerLauncher.launch(mCredential.newChooseAccountIntent());
-            } else {
-                // Разрешение не предоставлено, сбрасываем настройку "Використання календарю"
-                SharedPreferences.Editor editor = prefSet.edit();
-                editor.putBoolean(AppConstants.KEY_GOOGLE_CALENDAR_ENABLED, false);
-                editor.apply();
-                Toast.makeText(this, "Необходимо предоставить доступ к календарю для работы приложения", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         applyTheme();
 
         boolean isWidgetEnabled = prefSet.getBoolean(AppConstants.KEY_WIDGET_ENABLED, false);
         if (isWidgetEnabled) {
-            updateWidgetAndCalendar();
+            updateWidget();
         } else {
             removeWidget();
         }
 
-        boolean isGoogleCalendarEnabled = prefSet.getBoolean(AppConstants.KEY_GOOGLE_CALENDAR_ENABLED, false);
-        if (isGoogleCalendarEnabled) {
-            // Проверяем наличие разрешения на доступ к календарю
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_CALENDAR}, AppConstants.PERMISSIONS_REQUEST_CODE);
-            } else {
-                // Разрешение уже предоставлено, продолжаем работу с календарем
-                if (googleAccountName == null) {
-                    // Если аккаунт еще не выбран, запускаем выбор аккаунта
-                    accountPickerLauncher.launch(mCredential.newChooseAccountIntent());
-                } else {
-                    // Инициализируем помощник календаря с выбранным аккаунтом
-                    calendarHelper = new GoogleCalendarHelper(this, mCredential);
-                }
-            }
-        } else {
-            // Если использование календаря выключено
-            if (calendarHelper != null) {
-                calendarHelper.removeAllProgramEventsFromCalendar();
-            }
+        boolean isGoogleCalendarEnabled = prefSet.getBoolean(AppConstants.KEY_GOOGLE_CALENDAR_ENABLED, true);
+        boolean isRevocationNotificationRequired = prefSet.getBoolean(AppConstants.KEY_CALENDAR_PERMISSION_REVOCATION_SHOWN, false);
+
+        if (!isGoogleCalendarEnabled && isRevocationNotificationRequired) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Видалення дозволу")
+                    .setMessage("Додавання розкладу у календар неможливе." +
+                            " Будь ласка, скасуйте дозвіл на використання календаря програмою в налаштуваннях телефону.")
+                    .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                    .show();
+
+            SharedPreferences.Editor editor = prefSet.edit();
+            editor.putBoolean(AppConstants.KEY_CALENDAR_PERMISSION_REVOCATION_SHOWN, false);
+            editor.apply();
         }
     }
-
-
 
     private void applyTheme() {
         int theme = prefSet.getInt(AppConstants.KEY_THEME, AppConstants.THEME_SYSTEM);
@@ -577,7 +505,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         viewPager.setVisibility(View.VISIBLE);
-        updateWidgetAndCalendar();
+        updateWidget();
     }
 
     public void touchableOff(View progressBar) {
@@ -619,13 +547,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void updateWidgetAndCalendar() {
+    private void updateWidget() {
         if (catalogSchedules != null && !catalogSchedules.isEmpty() && !catalogSchedules.get(0).isEmpty()) {
             String scheduleDataForWidget = PresentationUtils.formatScheduleForWidget(this, catalogSchedules.get(0));
             sendScheduleDataToWidget(scheduleDataForWidget);
-
-            GoogleCalendarHelper calendarHelper = new GoogleCalendarHelper(this, mCredential);
-            calendarHelper.addLessonsToCalendar(catalogSchedules.get(0));
         }
     }
 

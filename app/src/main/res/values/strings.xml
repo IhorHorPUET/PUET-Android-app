@@ -71,8 +71,7 @@
     <string name="google_calendar_section_title">Використання календарю Google</string>
     <string name="selected_account">Обраний акаунт: %1$s</string>
     <string name="no_account_selected">Вибір не зроблено</string>
-    <string name="select_google_account_on_start">Вибрати інший аккаунт Google</string>
-    <string name="google_accaunt_selection">Вибирати аккаунт Google при старті</string>
+    <string name="select_google_account">Вибір облікового запису</string>
 
     <string name="Choose_Date_Range">Вибір діапазону дат у календарі</string>
     <string name="date_range_seekbar">Кількість днів між початковую та кінцевою датами</string>
