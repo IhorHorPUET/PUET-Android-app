@@ -2,6 +2,7 @@ package csit.puet.data;
 
 import androidx.annotation.NonNull;
 
+import csit.puet.AppConstants;
 import csit.puet.data.model.Lesson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -29,9 +30,7 @@ import java.lang.reflect.Type;
 
 public class DataUtils {
 
-    private static final String PREFS_NAME = "AppPrefs";
-
-    public static List<List<Lesson>> sortLessonsList(List<List<Lesson>> allLessonsList) {
+     public static List<List<Lesson>> sortLessonsList(List<List<Lesson>> allLessonsList) {
         List<List<Lesson>> sortedLessonsList = new ArrayList<>(allLessonsList);
         sortedLessonsList.forEach(subList -> subList.sort((lesson1, lesson2) -> {
             int yearComparison = Integer.compare(Integer.parseInt(lesson1.getDate().substring(6)),
@@ -111,8 +110,8 @@ public class DataUtils {
     }
 
     public static void saveSearchBands(Context context, List<String> searchBands) {
-        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
+        SharedPreferences prefSet = context.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefSet.edit();
         Gson gson = new Gson();
         String json = gson.toJson(searchBands);
         editor.putString("searchBands", json);
@@ -120,9 +119,9 @@ public class DataUtils {
     }
 
     public static List<String> loadSearchBands(Context context) {
-        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences prefSet = context.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
         Gson gson = new Gson();
-        String json = preferences.getString("searchBands", null);
+        String json = prefSet.getString("searchBands", null);
         Type type = new TypeToken<ArrayList<String>>() {}.getType();
         return gson.fromJson(json, type);
     }

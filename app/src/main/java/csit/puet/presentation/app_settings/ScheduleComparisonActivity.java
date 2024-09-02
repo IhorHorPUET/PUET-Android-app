@@ -14,6 +14,7 @@ import androidx.work.WorkManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import csit.puet.AppConstants;
 import csit.puet.R;
 import csit.puet.data.model.Lesson;
 import csit.puet.presentation.ui.PresentationUtils;
@@ -25,14 +26,12 @@ import java.util.List;
 public class ScheduleComparisonActivity extends AppCompatActivity {
 
     SharedPreferences prefSet;
-    private static final String KEY_NEW_LESSONS = "newLessonsFirst";
-    private static final String KEY_OLD_LESSONS = "oldLessonsFirst";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_comparison);
-        prefSet = getSharedPreferences("prefSettings", MODE_PRIVATE);
+        prefSet = getSharedPreferences(AppConstants.PREF_SET, MODE_PRIVATE);
 
         WorkManager.getInstance(this).cancelAllWorkByTag("notification_task");
 
@@ -129,7 +128,7 @@ public class ScheduleComparisonActivity extends AppCompatActivity {
     }
 
     private List<Lesson> getNewScheduleForDate(String date) {
-        String newLessonsJson = prefSet.getString(KEY_NEW_LESSONS, null);
+        String newLessonsJson = prefSet.getString(AppConstants.KEY_NEW_LESSONS, null);
 
         if (newLessonsJson == null) {
             return new ArrayList<>();
@@ -144,7 +143,7 @@ public class ScheduleComparisonActivity extends AppCompatActivity {
     }
 
     private List<Lesson> getOldScheduleForDate(String date) {
-        String oldLessonsJson = prefSet.getString(KEY_OLD_LESSONS, null);
+        String oldLessonsJson = prefSet.getString(AppConstants.KEY_OLD_LESSONS, null);
 
         if (oldLessonsJson == null) {
             return new ArrayList<>();

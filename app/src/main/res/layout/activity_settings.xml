@@ -188,6 +188,15 @@
                         android:layout_marginVertical="2dp" />
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/googleAccountTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp" />
+
                 <LinearLayout
                     android:id="@+id/googleCalendarSection"
                     android:layout_width="match_parent"
@@ -748,6 +757,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:timePickerMode="spinner"
+                            android:textColor="@color/black"
                             android:layout_gravity="center_horizontal" />
                     </LinearLayout>
 

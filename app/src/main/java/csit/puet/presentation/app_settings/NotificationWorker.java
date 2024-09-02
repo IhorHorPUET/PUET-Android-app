@@ -13,6 +13,7 @@ import androidx.work.WorkerParameters;
 
 import java.util.Calendar;
 
+import csit.puet.AppConstants;
 import csit.puet.R;
 import android.media.MediaPlayer;
 import android.os.VibrationEffect;
@@ -23,16 +24,6 @@ public class NotificationWorker extends Worker {
 
     SharedPreferences prefSet;
     private static final String CHANNEL_ID = "schedule_sync_channel";
-    private static final String KEY_NOTIFICATION_REPEAT = "keyNotificationRepeat";
-    private static final String KEY_NOTIFICATION_INTERVAL = "keyNotificationInterval";
-    private static final String KEY_TEXT_MESSAGE_ENABLED = "keyTextMessageEnabled";
-    private static final String KEY_VIBRATION_ENABLED = "keyVibrationEnabled";
-    private static final String KEY_SOUND_ENABLED = "keySoundEnabled";
-    private static final String KEY_NOTIFICATION_SOUND_URI = "keyNotificationSoundUri";
-    private static final String KEY_DO_NOT_DISTURB_ENABLED = "keyDoNotDisturbEnabled";
-    private static final String KEY_DO_NOT_DISTURB_START_TIME = "keyDoNotDisturbStartTime";
-    private static final String KEY_DO_NOT_DISTURB_END_TIME = "keyDoNotDisturbEndTime";
-    private static final String KEY_DATES_WITH_DIFFERENCES = "datesWithDifferences";
 
     private final boolean isTextMessageEnabled;
     private final boolean isVibrationEnabled;
@@ -49,18 +40,18 @@ public class NotificationWorker extends Worker {
         super(context, params);
 
         // Reading from SharedPreferences
-        prefSet = context.getSharedPreferences("prefSettings", Context.MODE_PRIVATE);
+        prefSet = context.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
 
-        isTextMessageEnabled = prefSet.getBoolean(KEY_TEXT_MESSAGE_ENABLED, false);
-        isVibrationEnabled = prefSet.getBoolean(KEY_VIBRATION_ENABLED, false);
-        isSoundEnabled = prefSet.getBoolean(KEY_SOUND_ENABLED, false);
-        soundUriString = prefSet.getString(KEY_NOTIFICATION_SOUND_URI, String.valueOf(R.raw.allert));
-        notificationRepeat = prefSet.getInt(KEY_NOTIFICATION_REPEAT, 2);
-        notificationInterval = prefSet.getInt(KEY_NOTIFICATION_INTERVAL, 15); // in minutes
-        isDoNotDisturbEnabled = prefSet.getBoolean(KEY_DO_NOT_DISTURB_ENABLED, false);
-        startTime = prefSet.getInt(KEY_DO_NOT_DISTURB_START_TIME, 1320); // Default 22:00 (1320 minutes)
-        endTime = prefSet.getInt(KEY_DO_NOT_DISTURB_END_TIME, 480); // Default 08:00 (480 minutes)
-        scheduleDifferences = prefSet.getString(KEY_DATES_WITH_DIFFERENCES, "Розклад змінився");
+        isTextMessageEnabled = prefSet.getBoolean(AppConstants.KEY_TEXT_MESSAGE_ENABLED, false);
+        isVibrationEnabled = prefSet.getBoolean(AppConstants.KEY_VIBRATION_ENABLED, false);
+        isSoundEnabled = prefSet.getBoolean(AppConstants.KEY_SOUND_ENABLED, false);
+        soundUriString = prefSet.getString(AppConstants.KEY_NOTIFICATION_SOUND_URI, String.valueOf(R.raw.allert));
+        notificationRepeat = prefSet.getInt(AppConstants.KEY_NOTIFICATION_REPEAT, 2);
+        notificationInterval = prefSet.getInt(AppConstants.KEY_NOTIFICATION_INTERVAL, 15); // in minutes
+        isDoNotDisturbEnabled = prefSet.getBoolean(AppConstants.KEY_DO_NOT_DISTURB_ENABLED, false);
+        startTime = prefSet.getInt(AppConstants.KEY_DO_NOT_DISTURB_START_TIME, 1320); // Default 22:00 (1320 minutes)
+        endTime = prefSet.getInt(AppConstants.KEY_DO_NOT_DISTURB_END_TIME, 480); // Default 08:00 (480 minutes)
+        scheduleDifferences = prefSet.getString(AppConstants.KEY_DATES_WITH_DIFFERENCES, "Розклад змінився");
     }
 
     @NonNull

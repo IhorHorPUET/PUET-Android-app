@@ -1,5 +1,6 @@
 package csit.puet;
 
+import android.Manifest;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
@@ -7,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Html;
@@ -24,6 +26,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
 import androidx.work.BackoffPolicy;
@@ -83,35 +86,32 @@ public class MainActivity extends AppCompatActivity {
     List<String> searchBands = new ArrayList<>();
     ArrayList<String> savedGroupBands;
     List<List<Lesson>> catalogSchedules = new ArrayList<>();
-    String date_s = "";
-    String date_e = "";
+    String start_date = "";
+    String end_date = "";
     String teacherName = "";
     String classroomName = "";
     String groupName = "";
     String teacherId = "";
     String classroomId = "";
 
-    private boolean autoLoad = true;
-    private boolean checkBox = true;
+    private boolean autoLoadSchedules = true;
+    private boolean searchParametersCheckBox = true;
 
     private ActivityResultLauncher<Intent> accountPickerLauncher;
-    public static final int REQUEST_AUTHORIZATION = 1001;
     private GoogleAccountCredential mCredential;
     private GoogleCalendarHelper calendarHelper;
+    private String googleAccountName;
 
     private ActivityResultLauncher<Intent> settingsActivityLauncher;
     SharedPreferences prefSet;
-    private static final String KEY_UPDATE_ENABLED = "keyUpdateEnabled";
-    private static final String KEY_UPDATE_INTERVAL = "keyUpdateInterval";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         PresentationUtils.applySavedTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_interface);
-        prefSet = this.getSharedPreferences("prefSettings", Context.MODE_PRIVATE);
-        prefData = this.getSharedPreferences("prefData", Context.MODE_PRIVATE);
+        prefSet = this.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
+        prefData = this.getSharedPreferences(AppConstants.PREF_DATA, Context.MODE_PRIVATE);
 
         mCredential = GoogleAccountCredential.usingOAuth2(this, Collections.singleton(CalendarScopes.CALENDAR));
 
@@ -119,25 +119,30 @@ public class MainActivity extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null && result.getData().getExtras() != null) {
-                        String accountName = result.getData().getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-                        if (accountName != null) {
-                            mCredential.setSelectedAccountName(accountName);
+                        googleAccountName = result.getData().getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                        if (googleAccountName != null) {
+                            mCredential.setSelectedAccountName(googleAccountName);
                             SharedPreferences.Editor editor = prefData.edit();
-                            editor.putString("googleAccountName", accountName);
+                            editor.putString(AppConstants.KEY_GOOGLE_ACCOUNT_NAME, googleAccountName);
                             editor.apply();
                             calendarHelper = new GoogleCalendarHelper(this, mCredential);
                         }
+                    } else {
+                        // Если пользователь не выбрал аккаунт, сбрасываем настройку "Використання календарю"
+                        SharedPreferences.Editor editor = prefSet.edit();
+                        editor.putBoolean(AppConstants.KEY_GOOGLE_CALENDAR_ENABLED, false);
+                        editor.apply();
                     }
                 }
         );
 
-        String savedAccountName = prefData.getString("googleAccountName", null);
-        boolean shouldPromptAccountSelection = prefSet.getBoolean(SettingsActivity.KEY_GOOGLE_ACCOUNT_SELECTION, true);
+        googleAccountName = prefData.getString(AppConstants.KEY_GOOGLE_ACCOUNT_NAME, null);
+        boolean shouldPromptAccountSelection = prefSet.getBoolean(AppConstants.KEY_GOOGLE_ACCOUNT_SELECTION, true);
 
         if (shouldPromptAccountSelection) {
             accountPickerLauncher.launch(mCredential.newChooseAccountIntent());
-        } else if (savedAccountName != null) {
-            mCredential.setSelectedAccountName(savedAccountName);
+        } else if (googleAccountName != null) {
+            mCredential.setSelectedAccountName(googleAccountName);
             calendarHelper = new GoogleCalendarHelper(this, mCredential);
         } else {
             calendarHelper = null;
@@ -156,14 +161,14 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         touchableOn(progressBar);
 
-        String savedTeacherName = prefData.getString("teacherName", "");
-        String savedTeacherId = prefData.getString("teacherId", "");
-        String savedClassroomName = prefData.getString("classroomName", "");
-        String savedClassroomId = prefData.getString("classroomId", "");
-        String savedGroupName = prefData.getString("groupName", "");
+        String savedTeacherName = prefData.getString(AppConstants.KEY_TEACHER_NAME, "");
+        String savedTeacherId = prefData.getString(AppConstants.KEY_TEACHER_ID, "");
+        String savedClassroomName = prefData.getString(AppConstants.KEY_CLASSROOM_NAME, "");
+        String savedClassroomId = prefData.getString(AppConstants.KEY_CLASSROOM_ID, "");
+        String savedGroupName = prefData.getString(AppConstants.KEY_GROUP_NAME, "");
 
         Gson gson = new Gson();
-        String jsonGroupBands = prefData.getString("groupBands", null);
+        String jsonGroupBands = prefData.getString(AppConstants.KEY_GROUP_BANDS, null);
         Type type = new TypeToken<ArrayList<String>>() {
         }.getType();
         savedGroupBands = gson.fromJson(jsonGroupBands, type);
@@ -326,7 +331,7 @@ public class MainActivity extends AppCompatActivity {
                         groupNameAutoComplete.setText(savedGroupName);
                     }
 
-                    if (autoLoad) {
+                    if (autoLoadSchedules) {
                         search();
                     }
                     groupNameAutoComplete.setThreshold(1);
@@ -371,7 +376,7 @@ public class MainActivity extends AppCompatActivity {
 
 //============  Checkbox  ===============
         CheckBox rememberSelectionCheckbox = findViewById(R.id.checkBox);
-        rememberSelectionCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> checkBox = isChecked);
+        rememberSelectionCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> searchParametersCheckBox = isChecked);
 
 
 //============  Search  ===============
@@ -388,29 +393,70 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults); // Вызов родительского метода
+
+        if (requestCode == AppConstants.PERMISSIONS_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Разрешение предоставлено, запускаем выбор аккаунта
+                accountPickerLauncher.launch(mCredential.newChooseAccountIntent());
+            } else {
+                // Разрешение не предоставлено, сбрасываем настройку "Використання календарю"
+                SharedPreferences.Editor editor = prefSet.edit();
+                editor.putBoolean(AppConstants.KEY_GOOGLE_CALENDAR_ENABLED, false);
+                editor.apply();
+                Toast.makeText(this, "Необходимо предоставить доступ к календарю для работы приложения", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         applyTheme();
 
-        boolean isWidgetEnabled = prefSet.getBoolean(SettingsActivity.KEY_WIDGET_ENABLED, false);
-
+        boolean isWidgetEnabled = prefSet.getBoolean(AppConstants.KEY_WIDGET_ENABLED, false);
         if (isWidgetEnabled) {
             updateWidgetAndCalendar();
         } else {
             removeWidget();
         }
+
+        boolean isGoogleCalendarEnabled = prefSet.getBoolean(AppConstants.KEY_GOOGLE_CALENDAR_ENABLED, false);
+        if (isGoogleCalendarEnabled) {
+            // Проверяем наличие разрешения на доступ к календарю
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_CALENDAR}, AppConstants.PERMISSIONS_REQUEST_CODE);
+            } else {
+                // Разрешение уже предоставлено, продолжаем работу с календарем
+                if (googleAccountName == null) {
+                    // Если аккаунт еще не выбран, запускаем выбор аккаунта
+                    accountPickerLauncher.launch(mCredential.newChooseAccountIntent());
+                } else {
+                    // Инициализируем помощник календаря с выбранным аккаунтом
+                    calendarHelper = new GoogleCalendarHelper(this, mCredential);
+                }
+            }
+        } else {
+            // Если использование календаря выключено
+            if (calendarHelper != null) {
+                calendarHelper.removeAllProgramEventsFromCalendar();
+            }
+        }
     }
 
+
+
     private void applyTheme() {
-        int theme = prefSet.getInt(SettingsActivity.KEY_THEME, SettingsActivity.THEME_SYSTEM);
+        int theme = prefSet.getInt(AppConstants.KEY_THEME, AppConstants.THEME_SYSTEM);
         switch (theme) {
-            case SettingsActivity.THEME_SYSTEM:
+            case AppConstants.THEME_SYSTEM:
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
                 break;
-            case SettingsActivity.THEME_LIGHT:
+            case AppConstants.THEME_LIGHT:
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 break;
-            case SettingsActivity.THEME_DARK:
+            case AppConstants.THEME_DARK:
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 break;
         }
@@ -436,13 +482,13 @@ public class MainActivity extends AppCompatActivity {
         if (calendarManager.getSelectedStartDate() != null && calendarManager.getSelectedEndDate() != null) {
             Calendar selectedStartDate = calendarManager.getSelectedStartDate();
             Calendar selectedEndDate = calendarManager.getSelectedEndDate();
-            date_s = "date_s=" + calendarManager.formatDate(selectedStartDate) + "&";
-            date_e = "date_e=" + calendarManager.formatDate(selectedEndDate) + "&";
+            start_date = "date_s=" + calendarManager.formatDate(selectedStartDate) + "&";
+            end_date = "date_e=" + calendarManager.formatDate(selectedEndDate) + "&";
         }
     }
 
     private void generateSearchBands() {
-        String prefix = date_s + date_e + teacherId + classroomId;
+        String prefix = start_date + end_date + teacherId + classroomId;
         searchBands.clear();
         if (!groupBands.isEmpty()) {
             for (String band : groupBands) {
@@ -467,7 +513,7 @@ public class MainActivity extends AppCompatActivity {
                     .show());
             touchableOn(progressBar);
         } else {
-            if (checkBox) {
+            if (searchParametersCheckBox) {
                 savePreferences();
             }
         }
@@ -496,7 +542,7 @@ public class MainActivity extends AppCompatActivity {
                 touchableOn(progressBar);
             }
         });
-        autoLoad = false;
+        autoLoadSchedules = false;
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -546,8 +592,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startBackgroundUpdate() {
-        boolean autoUpdate = prefSet.getBoolean(KEY_UPDATE_ENABLED, false);
-        int updateInterval = prefSet.getInt(KEY_UPDATE_INTERVAL, 24); // Default to 24 hours if not set
+        boolean autoUpdate = prefSet.getBoolean(AppConstants.KEY_UPDATE_ENABLED, false);
+        int updateInterval = prefSet.getInt(AppConstants.KEY_UPDATE_INTERVAL, 24); // Default to 24 hours if not set
 
         WorkManager.getInstance(this).cancelAllWorkByTag("scheduleSync");
         WorkManager.getInstance(this).cancelAllWorkByTag("csit.puet.presentation.app_settings.ScheduleSync");
@@ -594,7 +640,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendScheduleDataToWidget(String scheduleData) {
-        boolean isWidgetEnabled = prefSet.getBoolean(SettingsActivity.KEY_WIDGET_ENABLED, false);
+        boolean isWidgetEnabled = prefSet.getBoolean(AppConstants.KEY_WIDGET_ENABLED, false);
 
         if (isWidgetEnabled) {
             Intent intent = new Intent(this, ScheduleWidgetProvider.class);

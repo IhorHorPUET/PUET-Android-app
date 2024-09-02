@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
+import csit.puet.AppConstants;
 import csit.puet.R;
 
 import java.util.Calendar;
@@ -27,8 +28,8 @@ public class CalendarManager {
         selectedEndDate = Calendar.getInstance();
 
         // Load the date range from SharedPreferences
-        SharedPreferences preferences = context.getSharedPreferences("AppSettingsPrefs", Context.MODE_PRIVATE);
-        int dateRange = preferences.getInt("keyDateRange", 7); // Default is 7 days
+        SharedPreferences prefSet = context.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
+        int dateRange = prefSet.getInt("keyDateRange", 7); // Default is 7 days
 
         // Set the end date based on the current date plus the date range
         selectedEndDate.add(Calendar.DAY_OF_MONTH, dateRange);
@@ -60,8 +61,8 @@ public class CalendarManager {
 
     public void showEndDatePicker() {
         // Load the date range from SharedPreferences
-        SharedPreferences preferences = context.getSharedPreferences("AppSettingsPrefs", Context.MODE_PRIVATE);
-        int dateRange = preferences.getInt("keyDateRange", 7); // Default is 7 days
+        SharedPreferences prefSet = context.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
+        int dateRange = prefSet.getInt("keyDateRange", 7); // Default is 7 days
 
         // Set the end date based on the current date plus the date range
         Calendar endDateForPicker = Calendar.getInstance();
@@ -77,7 +78,7 @@ public class CalendarManager {
                         endDateTextView.setText(formatDate(selectedEndDate));
 
                         // Save the new end date in SharedPreferences
-                        SharedPreferences.Editor editor = preferences.edit();
+                        SharedPreferences.Editor editor = prefSet.edit();
                         editor.putInt("keyDateRange", calculateDateRange(selectedStartDate, selectedEndDate));
                         editor.apply();
                     }

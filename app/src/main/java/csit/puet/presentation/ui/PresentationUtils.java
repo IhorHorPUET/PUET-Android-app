@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.text.ParseException;
 
+import csit.puet.AppConstants;
 import csit.puet.data.model.Lesson;
 
 import android.text.SpannableString;
@@ -37,12 +38,6 @@ import android.text.style.StyleSpan;
 import android.text.Layout;
 
 public class PresentationUtils {
-
-    private static final String PREFS_NAME = "AppSettingsPrefs";
-    private static final String KEY_THEME = "keyTheme";
-    private static final int THEME_SYSTEM = 0;
-    private static final int THEME_LIGHT = 1;
-    private static final int THEME_DARK = 2;
 
     public static void setupTextWatcher(final AutoCompleteTextView autoCompleteTextView, final ImageButton imageButton) {
         autoCompleteTextView.addTextChangedListener(new TextWatcher() {
@@ -129,17 +124,17 @@ public class PresentationUtils {
     }
 
     public static void applySavedTheme(Context context) {
-        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        int theme = preferences.getInt(KEY_THEME, THEME_SYSTEM);
+        SharedPreferences prefSet = context.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
+        int theme = prefSet.getInt(AppConstants.KEY_THEME, AppConstants.THEME_SYSTEM);
 
         switch (theme) {
-            case THEME_LIGHT:
+            case AppConstants.THEME_LIGHT:
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 break;
-            case THEME_DARK:
+            case AppConstants.THEME_DARK:
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 break;
-            case THEME_SYSTEM:
+            case AppConstants.THEME_SYSTEM:
             default:
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
                 break;
@@ -147,8 +142,8 @@ public class PresentationUtils {
     }
 
     public static void updateDatesFromPreferences(Context context, CalendarManager calendarManager, TextView startDateTextView, TextView endDateTextView) {
-        SharedPreferences preferences = context.getSharedPreferences("AppSettingsPrefs", Context.MODE_PRIVATE);
-        int dateRange = preferences.getInt("keyDateRange", 7);
+        SharedPreferences prefSet = context.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
+        int dateRange = prefSet.getInt("keyDateRange", 7);
 
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.add(Calendar.DAY_OF_MONTH, dateRange);
@@ -160,9 +155,8 @@ public class PresentationUtils {
     }
 
     public static String formatScheduleForWidget(Context context, List<Lesson> schedulesForWidget) {
-        SharedPreferences preferences = context.getSharedPreferences("ServerDataPrefs", Context.MODE_PRIVATE);
-        final String KEY_LAST_SYNC_TIME = "keyLastSyncTime";
-        String lastSyncTime = preferences.getString(KEY_LAST_SYNC_TIME, "Немає даних про останню синхронізацію");
+        SharedPreferences prefSet = context.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
+        String lastSyncTime = prefSet.getString(AppConstants.KEY_LAST_SYNC_TIME, "Немає даних про останню синхронізацію");
 
         StringBuilder scheduleStringBuilder = new StringBuilder();
         scheduleStringBuilder.append("<div style='text-align:center;'>")

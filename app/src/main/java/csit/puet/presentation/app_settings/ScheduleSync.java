@@ -30,6 +30,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import csit.puet.AppConstants;
 import csit.puet.data.DataCallbackAllLessons;
 import csit.puet.data.DataManager;
 import csit.puet.data.model.Lesson;
@@ -55,7 +56,7 @@ public class ScheduleSync extends Worker {
 
     public ScheduleSync(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
-        prefSet = context.getSharedPreferences("prefSettings", Context.MODE_PRIVATE);
+        prefSet = context.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
         loadPreferences(context);
     }
 

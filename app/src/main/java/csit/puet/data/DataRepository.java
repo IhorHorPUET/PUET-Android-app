@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import csit.puet.AppConstants;
 import csit.puet.data.database.ClassroomEntity;
 import csit.puet.data.database.GroupDao;
 import csit.puet.data.database.GroupEntity;
@@ -43,9 +44,6 @@ public class DataRepository {
     private final GroupDao groupDao;
     private final LessonsDao lessonsDao;
     private final Executor executor;
-
-    private static final String PREFS_NAME = "ServerDataPrefs";
-    private static final String KEY_LAST_SYNC_TIME = "keyLastSyncTime";
 
     public DataRepository(Context context, ServerDataSource serverDataSource, TeacherDao teacherDao,
                           ClassroomDao classroomDao, GroupDao groupDao, LessonsDao lessonsDao) {
@@ -322,11 +320,11 @@ public class DataRepository {
     }
 
     private void saveLastSyncTime() {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        SharedPreferences prefSet = context.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefSet.edit();
 
         String currentTime = new SimpleDateFormat(" HH:mm dd-MM-yyyy", Locale.getDefault()).format(new Date());
-        editor.putString(KEY_LAST_SYNC_TIME, currentTime);
+        editor.putString(AppConstants.KEY_LAST_SYNC_TIME, currentTime);
         editor.apply();
     }
 }

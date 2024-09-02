@@ -1,9 +1,12 @@
 package csit.puet.data;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.provider.CalendarContract;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -20,20 +23,17 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
-import com.google.api.services.calendar.model.Events;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
-import csit.puet.MainActivity;
+import csit.puet.AppConstants;
 import csit.puet.data.model.Lesson;
 
 public class GoogleCalendarHelper {
@@ -52,6 +52,7 @@ public class GoogleCalendarHelper {
 
     public void addEvent(String summary, String location, String description, DateTime startDateTime, DateTime endDateTime) {
         Log.d(TAG, "Starting to add event...");
+
         if (summary == null || summary.isEmpty()) {
             Log.e(TAG, "Event summary is null or empty");
             return;
@@ -72,6 +73,9 @@ public class GoogleCalendarHelper {
             Log.e(TAG, "Event endDateTime is null");
             return;
         }
+
+        // Добавляем уникальный идентификатор в описание
+        description += "\n" + AppConstants.PROGRAM_EVENT_DESCRIPTION;
 
         Log.d(TAG, "Summary: " + summary);
         Log.d(TAG, "Location: " + location);
@@ -144,7 +148,7 @@ public class GoogleCalendarHelper {
                 } else if (mLastError instanceof UserRecoverableAuthIOException) {
                     ((Activity) context).startActivityForResult(
                             ((UserRecoverableAuthIOException) mLastError).getIntent(),
-                            MainActivity.REQUEST_AUTHORIZATION);
+                            AppConstants.REQUEST_AUTHORIZATION);
                 } else {
                     Toast.makeText(context, "The following error occurred:\n" + mLastError.getMessage(), Toast.LENGTH_LONG).show();
                 }
@@ -191,7 +195,7 @@ public class GoogleCalendarHelper {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
             LocalDate localDate = LocalDate.parse(lesson.getDate(), formatter);
 
-             int hour = 8;
+            int hour = 8;
             int minute = 0;
             if (lesson.getNum() == 2) {
                 hour = 10;
@@ -210,4 +214,21 @@ public class GoogleCalendarHelper {
             return null;
         }
     }
+
+    public void removeAllProgramEventsFromCalendar() {
+        ContentResolver cr = context.getContentResolver();
+        Uri calendarUri = CalendarContract.Events.CONTENT_URI;
+
+        String selection = CalendarContract.Events.DESCRIPTION + " LIKE ?";
+        String[] selectionArgs = new String[]{"%" + AppConstants.PROGRAM_EVENT_DESCRIPTION + "%"};
+
+        int rowsDeleted = cr.delete(calendarUri, selection, selectionArgs);
+
+        if (rowsDeleted > 0) {
+            Log.d("CalendarCleanup", "Deleted " + rowsDeleted + " events from the calendar.");
+        } else {
+            Log.d("CalendarCleanup", "No events found to delete or an error occurred.");
+        }
+    }
+
 }
