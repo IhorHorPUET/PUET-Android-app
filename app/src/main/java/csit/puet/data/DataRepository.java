@@ -237,6 +237,7 @@ public class DataRepository {
                 @Override
                 public void onDataLoaded(List<Lesson> data) {
                     if (!data.isEmpty()) {
+                        saveLastSyncTime();
                         synchronized (allLessonsList) {
                             allLessonsList.add(data);
                             synchronized (allLessonsSum) {
@@ -252,7 +253,6 @@ public class DataRepository {
                         if (!allLessonsList.isEmpty()) {
                             callback.onDataLoaded(allLessonsList);
                             executor.execute(() -> saveLessonsList(DataUtils.sortLessonsList(allLessonsList)));
-                            saveLastSyncTime();
                         } else {
                             executor.execute(() -> {
                                 List<List<Lesson>> lessonsFromDb = convertLessonsEntitiesToList();

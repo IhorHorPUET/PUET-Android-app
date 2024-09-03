@@ -34,7 +34,6 @@ import androidx.work.WorkRequest;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -49,7 +48,6 @@ import csit.puet.data.DataCallback;
 import csit.puet.data.DataCallbackAllLessons;
 import csit.puet.data.DataManager;
 import csit.puet.data.DataUtils;
-import csit.puet.data.GoogleCalendarHelper;
 import csit.puet.data.model.Classroom;
 import csit.puet.data.model.Group;
 import csit.puet.data.model.Lesson;
@@ -350,29 +348,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         applyTheme();
-
-        boolean isWidgetEnabled = prefSet.getBoolean(AppConstants.KEY_WIDGET_ENABLED, false);
-        if (isWidgetEnabled) {
-            updateWidget();
-        } else {
-            removeWidget();
-        }
-
-        boolean isGoogleCalendarEnabled = prefSet.getBoolean(AppConstants.KEY_GOOGLE_CALENDAR_ENABLED, true);
-        boolean isRevocationNotificationRequired = prefSet.getBoolean(AppConstants.KEY_CALENDAR_PERMISSION_REVOCATION_SHOWN, false);
-
-        if (!isGoogleCalendarEnabled && isRevocationNotificationRequired) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Видалення дозволу")
-                    .setMessage("Додавання розкладу у календар неможливе." +
-                            " Будь ласка, скасуйте дозвіл на використання календаря програмою в налаштуваннях телефону.")
-                    .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                    .show();
-
-            SharedPreferences.Editor editor = prefSet.edit();
-            editor.putBoolean(AppConstants.KEY_CALENDAR_PERMISSION_REVOCATION_SHOWN, false);
-            editor.apply();
-        }
+        updateWidget();
+        PresentationUtils.handleGoogleCalendarSettings(this, prefSet);
     }
 
     private void applyTheme() {
@@ -508,15 +485,15 @@ public class MainActivity extends AppCompatActivity {
         updateWidget();
     }
 
+    public void touchableOn(View progressBar) {
+        if (progressBar != null) progressBar.setVisibility(View.GONE);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    }
+
     public void touchableOff(View progressBar) {
         if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-    }
-
-    public void touchableOn(View progressBar) {
-        if (progressBar != null) progressBar.setVisibility(View.GONE);
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     private void startBackgroundUpdate() {
@@ -548,9 +525,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateWidget() {
-        if (catalogSchedules != null && !catalogSchedules.isEmpty() && !catalogSchedules.get(0).isEmpty()) {
+        boolean isWidgetEnabled = prefSet.getBoolean(AppConstants.KEY_WIDGET_ENABLED, false);
+        if (catalogSchedules != null && !catalogSchedules.isEmpty() && !catalogSchedules.get(0).isEmpty() && isWidgetEnabled) {
             String scheduleDataForWidget = PresentationUtils.formatScheduleForWidget(this, catalogSchedules.get(0));
             sendScheduleDataToWidget(scheduleDataForWidget);
+        } else {
+            removeWidget();
         }
     }
 

@@ -55,6 +55,9 @@
 <br><br>
 <b>Увага!</b> В розкладі можливі зміни!]]></string>
 
+    <string name="revocation_permission_title">Видалення дозволу</string>
+    <string name="revocation_permission_message">Додавання розкладу у календар наразі неможливе. Будь ласка, скасуйте дозвіл на використання календаря програмою в налаштуваннях телефону.</string>
+
     <string name="save"> Зберегти </string>
     <string name="cancel">Скасувати</string>
 
@@ -67,8 +70,8 @@
     <string name="using_widget">Використання віджету</string>
     <string name="using_widget_title">Використання віджету для розкладу</string>
 
-    <string name="google_calendar_section">Використання календарю Google</string>
-    <string name="google_calendar_section_title">Використання календарю Google</string>
+    <string name="google_calendar_section">Використання календаря Google</string>
+    <string name="google_calendar_section_title">Використання календаря Google</string>
     <string name="selected_account">Обраний акаунт: %1$s</string>
     <string name="no_account_selected">Вибір не зроблено</string>
     <string name="select_google_account">Вибір облікового запису</string>

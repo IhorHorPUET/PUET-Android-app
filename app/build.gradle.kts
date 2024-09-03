@@ -21,7 +21,7 @@ android {
         applicationId = "csit.puet"
         minSdk = 26
         targetSdk = 34
-        versionCode = 59
+        versionCode = 60
         versionName = generateVersionName(versionCode!!)
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

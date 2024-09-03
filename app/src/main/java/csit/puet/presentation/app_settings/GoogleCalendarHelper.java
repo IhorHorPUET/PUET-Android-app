@@ -1,14 +1,17 @@
-package csit.puet.data;
+package csit.puet.presentation.app_settings;
 
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.CalendarContract;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.google.gson.reflect.TypeToken;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -23,6 +26,7 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
+import com.google.gson.Gson;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,15 +34,17 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
 import csit.puet.AppConstants;
 import csit.puet.data.model.Lesson;
 
+
 public class GoogleCalendarHelper {
     private static final String TAG = "GoogleCalendarHelper";
-    private final Calendar mService;
+    private Calendar mService = null;
     private final Context context;
 
     public GoogleCalendarHelper(Context context, GoogleAccountCredential credential) {
@@ -50,7 +56,7 @@ public class GoogleCalendarHelper {
                 .build();
     }
 
-    public void addEvent(String summary, String location, String description, DateTime startDateTime, DateTime endDateTime) {
+    private void addEvent(String summary, String location, String description, DateTime startDateTime, DateTime endDateTime) {
         Log.d(TAG, "Starting to add event...");
 
         if (summary == null || summary.isEmpty()) {
@@ -176,10 +182,13 @@ public class GoogleCalendarHelper {
     }
 
     public void addLessonsToCalendar(List<Lesson> lessons) {
+
+        removeAllProgramEventsFromCalendar();
+
         for (Lesson lesson : lessons) {
             String summary = lesson.getLesson();
             String location = lesson.getRoom();
-            String description = "Тип: " + lesson.getLessonType() + "\nГруппа: " + lesson.getGroup() + "\nПреподаватель: " + lesson.getTeacher();
+            String description = "Тип: " + lesson.getLessonType() + "\nГрупа: " + lesson.getGroup() + "\nВикладач: " + lesson.getTeacher();
 
             DateTime startDateTime = convertLessonToDateTime(lesson, true);
             DateTime endDateTime = convertLessonToDateTime(lesson, false);
@@ -231,4 +240,26 @@ public class GoogleCalendarHelper {
         }
     }
 
+    public void updateLessonsFromPreferences(SharedPreferences prefSet) {
+        // Получаем список новых уроков из SharedPreferences
+        List<Lesson> newLessons = getLessonsFromPreferences(prefSet, AppConstants.KEY_NEW_LESSONS);
+
+        // Удаляем старые события с тэгом
+        removeAllProgramEventsFromCalendar();
+
+        // Добавляем новые уроки в календарь
+        addLessonsToCalendar(newLessons);
+    }
+
+    private List<Lesson> getLessonsFromPreferences(SharedPreferences prefSet, String key) {
+        // Логика извлечения списка уроков из SharedPreferences
+        // Пример: Сериализация и десериализация списка уроков в формате JSON
+        String json = prefSet.getString(key, "");
+        if (!json.isEmpty()) {
+            return new Gson().fromJson(json, new TypeToken<List<Lesson>>() {
+            }.getType());
+        } else {
+            return new ArrayList<>();
+        }
+    }
 }

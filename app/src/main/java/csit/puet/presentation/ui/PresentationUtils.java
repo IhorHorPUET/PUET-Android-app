@@ -1,8 +1,10 @@
 package csit.puet.presentation.ui;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -16,6 +18,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
 import android.content.SharedPreferences;
 import android.widget.TextView;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -27,6 +31,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.text.ParseException;
 
+import csit.puet.R;
 import csit.puet.AppConstants;
 import csit.puet.data.model.Lesson;
 
@@ -235,6 +240,23 @@ public class PresentationUtils {
         } catch (ParseException e) {
             e.printStackTrace();
             return dateString; // If parsing fails, return the original string
+        }
+    }
+
+    public static void handleGoogleCalendarSettings(Context context, SharedPreferences prefSet) {
+        boolean isGoogleCalendarEnabled = prefSet.getBoolean(AppConstants.KEY_GOOGLE_CALENDAR_ENABLED, false);
+        boolean isRevocationNotificationRequired = prefSet.getBoolean(AppConstants.KEY_CALENDAR_PERMISSION_REVOCATION_SHOWN, false);
+
+        if (!isGoogleCalendarEnabled && isRevocationNotificationRequired) {
+            new AlertDialog.Builder(context)
+                    .setTitle(R.string.revocation_permission_title)
+                    .setMessage(R.string.revocation_permission_message)
+                    .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                    .show();
+
+            SharedPreferences.Editor editor = prefSet.edit();
+            editor.putBoolean(AppConstants.KEY_CALENDAR_PERMISSION_REVOCATION_SHOWN, false);
+            editor.apply();
         }
     }
 }

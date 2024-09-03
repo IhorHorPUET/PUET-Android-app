@@ -38,7 +38,6 @@ import android.widget.Toast;
 
 import java.util.Collections;
 
-
 public class SettingsActivity extends AppCompatActivity {
 
     SharedPreferences prefSet;
@@ -67,7 +66,6 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView autoUpdateIntervalValue;
     private SeekBar autoUpdateIntervalSeekBar;
 
-
     private LinearLayout notificationOptionsSection;
     CheckBox notificationCheckbox;
     CheckBox textMessageCheckbox;
@@ -79,7 +77,6 @@ public class SettingsActivity extends AppCompatActivity {
     private SeekBar notificationRepeatSeekBar;
     private TextView notificationIntervalValue;
     private SeekBar notificationIntervalSeekBar;
-
 
     private LinearLayout doNotDisturbOptionsSection;
     CheckBox doNotDisturbCheckbox;
@@ -172,7 +169,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         selectedTheme = prefSet.getInt(AppConstants.KEY_THEME, AppConstants.THEME_SYSTEM);
 
-        boolean isWidgetEnabled = prefSet.getBoolean(AppConstants.KEY_WIDGET_ENABLED, true);
+        boolean isWidgetEnabled = prefSet.getBoolean(AppConstants.KEY_WIDGET_ENABLED, false);
         widgetCheckbox.setChecked(isWidgetEnabled);
 
         boolean isGoogleCalendarEnabled;
@@ -185,9 +182,6 @@ public class SettingsActivity extends AppCompatActivity {
             googleAccountName = null;
         }
         mCredential = GoogleAccountCredential.usingOAuth2(this, Collections.singleton(CalendarScopes.CALENDAR));
-        boolean isCalendarPermissionRevocationShown = prefSet.getBoolean
-                (AppConstants.KEY_CALENDAR_PERMISSION_REVOCATION_SHOWN, false);
-
 
         boolean dateRangeEnabled = prefSet.getBoolean(AppConstants.KEY_DATE_RANGE_ENABLED, false);
         int dateRange = prefSet.getInt(AppConstants.KEY_DATE_RANGE_INTERVAL, 7);
@@ -431,13 +425,9 @@ public class SettingsActivity extends AppCompatActivity {
                     this, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
                 editor.putBoolean(AppConstants.KEY_CALENDAR_PERMISSION_REVOCATION_SHOWN, true);
             }
-//            // Удаление всех событий из календаря
-//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
-//                    == PackageManager.PERMISSION_GRANTED) {
-//                mCredential = GoogleAccountCredential.usingOAuth2(this, Collections.singleton(CalendarScopes.CALENDAR));
-//                // Здесь можно вызвать метод, который удалит все события из календаря, если это необходимо
-//                // Например: calendarHelper.removeAllProgramEventsFromCalendar();
-//            }
+        }else {
+            GoogleCalendarHelper calendarHelper = new GoogleCalendarHelper(this, mCredential);
+            calendarHelper.updateLessonsFromPreferences(prefSet);
         }
         editor.putBoolean(AppConstants.KEY_GOOGLE_CALENDAR_ENABLED, isGoogleCalendarEnabled);
         editor.putString(AppConstants.KEY_GOOGLE_ACCOUNT_NAME, googleAccountName);
