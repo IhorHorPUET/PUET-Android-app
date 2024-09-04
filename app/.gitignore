@@ -1,7 +1,1 @@
 /build
-/app/google-services.json
-/app/credentials.json
-/app/build/intermediates/packaged_res/debug/packageDebugResources/raw/credentials.json
-/app/build/intermediates/packaged_res/release/packageReleaseResources/raw/credentials.json
-/app/src/main/res/raw/credentials.json
-/.idea
