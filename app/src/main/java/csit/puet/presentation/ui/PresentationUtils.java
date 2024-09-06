@@ -1,10 +1,8 @@
 package csit.puet.presentation.ui;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -19,7 +17,6 @@ import android.widget.ImageButton;
 import android.content.SharedPreferences;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -44,7 +41,8 @@ import android.text.Layout;
 
 public class PresentationUtils {
 
-    public static void setupTextWatcher(final AutoCompleteTextView autoCompleteTextView, final ImageButton imageButton) {
+    public static void setupTextWatcher
+            (final AutoCompleteTextView autoCompleteTextView, final ImageButton imageButton) {
         autoCompleteTextView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -146,7 +144,8 @@ public class PresentationUtils {
         }
     }
 
-    public static void updateDatesFromPreferences(Context context, CalendarManager calendarManager, TextView startDateTextView, TextView endDateTextView) {
+    public static void updateDatesFromPreferences
+            (Context context, CalendarManager calendarManager, TextView startDateTextView, TextView endDateTextView) {
         SharedPreferences prefSet = context.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
         int dateRange = prefSet.getInt("keyDateRange", 7);
 
@@ -159,48 +158,6 @@ public class PresentationUtils {
         calendarManager.getSelectedEndDate().setTime(endCalendar.getTime());
     }
 
-    public static String formatScheduleForWidget(Context context, List<Lesson> schedulesForWidget) {
-        SharedPreferences prefSet = context.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
-        String lastSyncTime = prefSet.getString(AppConstants.KEY_LAST_SYNC_TIME, "Немає даних про останню синхронізацію");
-
-        StringBuilder scheduleStringBuilder = new StringBuilder();
-        scheduleStringBuilder.append("<div style='text-align:center;'>")
-                .append("<font color='#FF9800'>")
-                .append("<b>")
-                .append("Розклад оновлено: ").append(lastSyncTime)
-                .append("</b>")
-                .append("</div>");
-
-        String lastDate = "";
-        for (Lesson lesson : schedulesForWidget) {
-            if (!lesson.getDate().equals(lastDate)) {
-                scheduleStringBuilder.append("<div style='text-align:center;'>")
-                        .append("<font color='#2196F3'>")
-                        .append("<b>")
-                        .append(LessonAdapter.formatToCustomFormat(lesson.getDate()))
-                        .append("</b>")
-                        .append("</div>");
-                lastDate = lesson.getDate();
-            }
-            scheduleStringBuilder.append("<b>")
-                    .append(LessonAdapter.getPairNumberAndTime(lesson.getNum()))
-                    .append("</b>")
-                    .append("<br>")
-                    .append(lesson.getLesson())
-                    .append(" (")
-                    .append(lesson.getLessonType())
-                    .append(")")
-                    .append("<br>")
-                    .append(lesson.getGroup())
-                    .append("<br>")
-                    .append(lesson.getRoom().equals("дом_ПК") ? "дистанційно" : lesson.getRoom())
-                    .append("<br>")
-                    .append(lesson.getTeacher())
-                    .append("<br>");
-        }
-        return scheduleStringBuilder.toString();
-    }
-
     public static SpannableStringBuilder formatScheduleForDisplay(List<Lesson> schedules) {
         SpannableStringBuilder scheduleStringBuilder = new SpannableStringBuilder();
 
@@ -210,8 +167,10 @@ public class PresentationUtils {
             // Center and bold the pair number and time
             String pairNumberAndTime = String.valueOf(LessonAdapter.getPairNumberAndTime(lesson.getNum()));
             SpannableString spannablePair = new SpannableString(pairNumberAndTime);
-            spannablePair.setSpan(new StyleSpan(Typeface.BOLD), 0, pairNumberAndTime.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            spannablePair.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, pairNumberAndTime.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannablePair.setSpan(new StyleSpan
+                    (Typeface.BOLD), 0, pairNumberAndTime.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannablePair.setSpan(new AlignmentSpan.Standard
+                    (Layout.Alignment.ALIGN_CENTER), 0, pairNumberAndTime.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             scheduleStringBuilder.append(spannablePair).append("\n");
 
             // Add the rest of the lesson details
