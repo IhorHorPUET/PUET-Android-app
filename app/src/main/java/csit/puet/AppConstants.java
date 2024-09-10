@@ -16,7 +16,7 @@ public class AppConstants {
     public static final String KEY_WIDGET_ENABLED = "keyWidgetEnabled";
 
     // Google Calendar keys
-    public static final int REQUEST_CALENDAR_PERMISSION = 1;
+    public static final int REQUEST_CALENDAR_PERMISSION = 1011;
     public static final String KEY_GOOGLE_CALENDAR_ENABLED = "keyGoogleCalendarEnabled";
     public static final String KEY_GOOGLE_ACCOUNT_NAME = "googleAccountName";
     public static final String KEY_CALENDAR_PERMISSION_REVOCATION_SHOWN = "calendarPermissionRevocationShown";

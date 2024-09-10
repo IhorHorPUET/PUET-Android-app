@@ -24,6 +24,7 @@ import csit.puet.AppConstants;
 import android.Manifest;
 
 import csit.puet.R;
+import csit.puet.presentation.google_calendar.GoogleCalendarHelper;
 import csit.puet.presentation.ui.PresentationUtils;
 
 import android.content.Intent;
@@ -31,7 +32,6 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.services.calendar.CalendarScopes;
 
 import android.accounts.AccountManager;
 import android.widget.Toast;
@@ -87,6 +87,12 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        mCredential = GoogleAccountCredential.usingOAuth2(
+                        this,
+                        Collections.singleton("https://www.googleapis.com/auth/calendar.events"))
+                .setSelectedAccountName(googleAccountName);
+        mCredential.setSelectedAccountName(null);
 
         prefSet = getSharedPreferences(AppConstants.PREF_SET, MODE_PRIVATE);
 
@@ -181,7 +187,6 @@ public class SettingsActivity extends AppCompatActivity {
             isGoogleCalendarEnabled = false;
             googleAccountName = null;
         }
-        mCredential = GoogleAccountCredential.usingOAuth2(this, Collections.singleton(CalendarScopes.CALENDAR));
 
         boolean dateRangeEnabled = prefSet.getBoolean(AppConstants.KEY_DATE_RANGE_ENABLED, false);
         int dateRange = prefSet.getInt(AppConstants.KEY_DATE_RANGE_INTERVAL, 7);

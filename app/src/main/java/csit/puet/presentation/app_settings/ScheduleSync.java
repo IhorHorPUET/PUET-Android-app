@@ -37,6 +37,7 @@ import csit.puet.data.model.Lesson;
 import csit.puet.data.DataUtils;
 import csit.puet.presentation.ui.PresentationUtils;
 import csit.puet.presentation.widget.ScheduleWidgetProvider;
+import csit.puet.presentation.widget.WidgetUtils;
 
 public class ScheduleSync extends Worker {
 
@@ -81,6 +82,8 @@ public class ScheduleSync extends Worker {
         dataManager.getLessonsList(searchBands, new DataCallbackAllLessons() {
             @Override
             public void onDataLoaded(List<List<Lesson>> data) {
+                SharedPreferences.Editor editor = prefSet.edit();
+                Gson gson = new Gson();
                 newLessons.clear();
                 newLessons.addAll(data);
                 newLessons = DataUtils.sortLessonsList(newLessons);
@@ -98,10 +101,14 @@ public class ScheduleSync extends Worker {
 
                 if (newLessons != null && !newLessons.isEmpty() && !newLessons.get(0).isEmpty()) {
                     newLessonsFirst = newLessons.get(0);
+                    String newLessonsJson = gson.toJson(newLessonsFirst);
+                    editor.putString("newLessonsFirst", newLessonsJson);
                 }
 
                 if (oldLessons != null && !oldLessons.isEmpty() && !oldLessons.get(0).isEmpty()) {
                     oldLessonsFirst = oldLessons.get(0);
+                    String oldLessonsJson = gson.toJson(oldLessonsFirst);
+                    editor.putString("oldLessonsFirst", oldLessonsJson);
                 }
 
                 if (isNotificationsEnabled) {
@@ -109,7 +116,8 @@ public class ScheduleSync extends Worker {
                         triggerNotificationWorker(context);
                     }
                 }
-                updateWidget(context, newLessonsFirst);
+                editor.apply();
+                WidgetUtils.updateWidget(context, prefSet);
                 executor.shutdown();
             }
 
@@ -162,15 +170,6 @@ public class ScheduleSync extends Worker {
         if (datesWithDifferences.length() > 0) {
             SharedPreferences.Editor editor = prefSet.edit();
             editor.putString("datesWithDifferences", datesWithDifferences.toString());
-            Gson gson = new Gson();
-            if (!newLessonsFirst.isEmpty()) {
-                String newLessonsJson = gson.toJson(newLessons);
-                editor.putString("newLessonsFirst", newLessonsJson);
-            }
-            if (!oldLessonsFirst.isEmpty()) {
-                String oldLessonsJson = gson.toJson(oldLessons);
-                editor.putString("oldLessonsFirst", oldLessonsJson);
-            }
             editor.apply();
             return true;
         }
@@ -192,23 +191,5 @@ public class ScheduleSync extends Worker {
     private void loadPreferences(Context context) {
         dateRange = prefSet.getInt("keyDateRange", 7); // Default to 7 days
         isNotificationsEnabled = prefSet.getBoolean("keyNotificationsEnabled", false);
-    }
-
-    private void updateWidget(Context context, List<Lesson> newLessonsFirst) {
-        String scheduleData = null;
-        if (newLessonsFirst != null && !newLessonsFirst.isEmpty()) {
-            scheduleData = PresentationUtils.formatScheduleForWidget(context, newLessonsFirst);
-        }
-
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        ComponentName thisWidget = new ComponentName(context, ScheduleWidgetProvider.class);
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
-
-        Intent intent = new Intent(context, ScheduleWidgetProvider.class);
-        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        intent.putExtra("SCHEDULE_DATA", scheduleData);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-
-        context.sendBroadcast(intent);
     }
 }

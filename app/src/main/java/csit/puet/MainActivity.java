@@ -61,6 +61,7 @@ import csit.puet.presentation.ui.CalendarManager;
 import csit.puet.presentation.ui.PresentationUtils;
 import csit.puet.presentation.ui.ViewPagerAdapter;
 import csit.puet.presentation.widget.ScheduleWidgetProvider;
+import csit.puet.presentation.widget.WidgetUtils;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -348,7 +349,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         applyTheme();
-        updateWidget();
+        WidgetUtils.updateWidget(this, prefSet);
         PresentationUtils.handleGoogleCalendarSettings(this, prefSet);
     }
 
@@ -421,32 +422,37 @@ public class MainActivity extends AppCompatActivity {
             if (searchParametersCheckBox) {
                 savePreferences();
             }
+            usingSelectedDates();
+            generateSearchBands();
+            DataUtils.saveSearchBands(this, searchBands);
+            DataManager dataManager = new DataManager(getApplicationContext());
+
+            dataManager.getLessonsList(searchBands, new DataCallbackAllLessons() {
+                @Override
+                public void onDataLoaded(List<List<Lesson>> data) {
+                    catalogSchedules.clear();
+                    catalogSchedules.addAll(data);
+                    catalogSchedules = DataUtils.sortLessonsList(catalogSchedules);
+                    processData();
+                    touchableOn(progressBar);
+
+                    if (catalogSchedules != null && !catalogSchedules.isEmpty() && !catalogSchedules.get(0).isEmpty()) {
+                        SharedPreferences.Editor editor = prefSet.edit();
+                        Gson gson = new Gson();
+                        String newLessonsJson = gson.toJson(catalogSchedules.get(0));
+                        editor.putString("newLessonsFirst", newLessonsJson);
+                        editor.apply();
+                    }
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    Toast.makeText(MainActivity.this,
+                            "Помилка: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                    touchableOn(progressBar);
+                }
+            });
         }
-
-        usingSelectedDates();
-        generateSearchBands();
-        DataUtils.saveSearchBands(this, searchBands);
-
-        DataManager dataManager = new DataManager(getApplicationContext());
-        catalogSchedules.clear();
-
-        dataManager.getLessonsList(searchBands, new DataCallbackAllLessons() {
-            @Override
-            public void onDataLoaded(List<List<Lesson>> data) {
-                catalogSchedules.clear();
-                catalogSchedules.addAll(data);
-                catalogSchedules = DataUtils.sortLessonsList(catalogSchedules);
-                processData();
-                touchableOn(progressBar);
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                Toast.makeText(MainActivity.this,
-                        "Помилка: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                touchableOn(progressBar);
-            }
-        });
         autoLoadSchedules = false;
     }
 
@@ -482,7 +488,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         viewPager.setVisibility(View.VISIBLE);
-        updateWidget();
+        WidgetUtils.updateWidget(this, prefSet);
     }
 
     public void touchableOn(View progressBar) {
@@ -521,42 +527,6 @@ public class MainActivity extends AppCompatActivity {
 
             // Schedule the work
             WorkManager.getInstance(this).enqueue(dataSyncWorkRequest);
-        }
-    }
-
-    private void updateWidget() {
-        boolean isWidgetEnabled = prefSet.getBoolean(AppConstants.KEY_WIDGET_ENABLED, false);
-        if (catalogSchedules != null && !catalogSchedules.isEmpty() && !catalogSchedules.get(0).isEmpty() && isWidgetEnabled) {
-            String scheduleDataForWidget = PresentationUtils.formatScheduleForWidget(this, catalogSchedules.get(0));
-            sendScheduleDataToWidget(scheduleDataForWidget);
-        } else {
-            removeWidget();
-        }
-    }
-
-    private void removeWidget() {
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        ComponentName thisWidget = new ComponentName(this, ScheduleWidgetProvider.class);
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
-
-        for (int appWidgetId : appWidgetIds) {
-            appWidgetManager.updateAppWidget(appWidgetId, null);
-        }
-    }
-
-    public void sendScheduleDataToWidget(String scheduleData) {
-        boolean isWidgetEnabled = prefSet.getBoolean(AppConstants.KEY_WIDGET_ENABLED, false);
-
-        if (isWidgetEnabled) {
-            Intent intent = new Intent(this, ScheduleWidgetProvider.class);
-            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-            intent.putExtra("SCHEDULE_DATA", scheduleData);
-
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, ScheduleWidgetProvider.class));
-
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-            sendBroadcast(intent);
         }
     }
 }
