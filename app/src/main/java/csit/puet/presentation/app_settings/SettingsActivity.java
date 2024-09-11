@@ -430,7 +430,7 @@ public class SettingsActivity extends AppCompatActivity {
                     this, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
                 editor.putBoolean(AppConstants.KEY_CALENDAR_PERMISSION_REVOCATION_SHOWN, true);
             }
-        }else {
+        } else {
             GoogleCalendarHelper calendarHelper = new GoogleCalendarHelper(this, mCredential);
             calendarHelper.updateLessonsFromPreferences(prefSet);
         }
@@ -448,12 +448,15 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putInt(AppConstants.KEY_UPDATE_INTERVAL, updateInterval);
 
         boolean isNotificationsEnabled = notificationCheckbox.isChecked();
-        editor.putBoolean(AppConstants.KEY_NOTIFICATIONS_ENABLED, isNotificationsEnabled);
         boolean isTextMessageEnabled = textMessageCheckbox.isChecked();
-        editor.putBoolean(AppConstants.KEY_TEXT_MESSAGE_ENABLED, isTextMessageEnabled);
         boolean isVibrationEnabled = vibrationCheckbox.isChecked();
-        editor.putBoolean(AppConstants.KEY_VIBRATION_ENABLED, isVibrationEnabled);
         boolean isSoundEnabled = soundCheckbox.isChecked();
+        if (!isTextMessageEnabled && !isVibrationEnabled && !isSoundEnabled) {
+            isNotificationsEnabled = false;
+        }
+        editor.putBoolean(AppConstants.KEY_VIBRATION_ENABLED, isVibrationEnabled);
+        editor.putBoolean(AppConstants.KEY_TEXT_MESSAGE_ENABLED, isTextMessageEnabled);
+        editor.putBoolean(AppConstants.KEY_NOTIFICATIONS_ENABLED, isNotificationsEnabled);
         editor.putBoolean(AppConstants.KEY_SOUND_ENABLED, isSoundEnabled);
         editor.putString(AppConstants.KEY_NOTIFICATION_SOUND_URI, soundUriString);
 
