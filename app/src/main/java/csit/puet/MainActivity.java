@@ -52,6 +52,7 @@ import csit.puet.data.model.Lesson;
 import csit.puet.data.model.Teacher;
 import csit.puet.presentation.app_settings.ScheduleSync;
 import csit.puet.presentation.app_settings.SettingsActivity;
+import csit.puet.presentation.google_calendar.GoogleCalendarUtils;
 import csit.puet.presentation.ui.AdapterClassroomName;
 import csit.puet.presentation.ui.AdapterGroupName;
 import csit.puet.presentation.ui.AdapterTeacherName;
@@ -347,7 +348,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         applyTheme();
         WidgetUtils.updateWidget(this, prefSet);
-        PresentationUtils.handleGoogleCalendarSettings(this, prefSet);
+        GoogleCalendarUtils.handleGoogleCalendarSettings(this, prefSet);
     }
 
     private void applyTheme() {
