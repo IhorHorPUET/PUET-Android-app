@@ -420,18 +420,19 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putBoolean(AppConstants.KEY_WIDGET_ENABLED, isWidgetEnabled);
 
         boolean isGoogleCalendarEnabled = googleCalendarCheckbox.isChecked();
+        GoogleCalendarHelper calendarHelper = new GoogleCalendarHelper(this, mCredential);
         if (!isGoogleCalendarEnabled || googleAccountName == null || ContextCompat.checkSelfPermission
                 (this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
             isGoogleCalendarEnabled = false;
             googleAccountName = null;
             googleAccountTextView.setText(R.string.no_account_selected);
             mCredential.setSelectedAccountName(null);
+            calendarHelper.removeAllProgramEventsFromCalendar();
             if (ContextCompat.checkSelfPermission(
                     this, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
                 editor.putBoolean(AppConstants.KEY_CALENDAR_PERMISSION_REVOCATION_SHOWN, true);
             }
         } else {
-            GoogleCalendarHelper calendarHelper = new GoogleCalendarHelper(this, mCredential);
             calendarHelper.updateLessonsFromPreferences(prefSet);
         }
         editor.putBoolean(AppConstants.KEY_GOOGLE_CALENDAR_ENABLED, isGoogleCalendarEnabled);
