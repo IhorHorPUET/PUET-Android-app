@@ -87,14 +87,13 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        prefSet = getSharedPreferences(AppConstants.PREF_SET, MODE_PRIVATE);
 
         mCredential = GoogleAccountCredential.usingOAuth2(
                         this,
                         Collections.singleton("https://www.googleapis.com/auth/calendar.events"))
                 .setSelectedAccountName(googleAccountName);
         mCredential.setSelectedAccountName(null);
-
-        prefSet = getSharedPreferences(AppConstants.PREF_SET, MODE_PRIVATE);
 
         ringtonePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -423,17 +422,19 @@ public class SettingsActivity extends AppCompatActivity {
         GoogleCalendarHelper calendarHelper = new GoogleCalendarHelper(this, mCredential);
         if (!isGoogleCalendarEnabled || googleAccountName == null || ContextCompat.checkSelfPermission
                 (this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            if (googleAccountName != null) {
+                calendarHelper.removeAllPuetEventsFromCalendar();
+            }
             isGoogleCalendarEnabled = false;
             googleAccountName = null;
             googleAccountTextView.setText(R.string.no_account_selected);
             mCredential.setSelectedAccountName(null);
-            calendarHelper.removeAllProgramEventsFromCalendar();
             if (ContextCompat.checkSelfPermission(
                     this, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
                 editor.putBoolean(AppConstants.KEY_CALENDAR_PERMISSION_REVOCATION_SHOWN, true);
             }
         } else {
-            calendarHelper.updateLessonsFromPreferences(prefSet);
+            calendarHelper.addLessonsToCalendar(prefSet);
         }
         editor.putBoolean(AppConstants.KEY_GOOGLE_CALENDAR_ENABLED, isGoogleCalendarEnabled);
         editor.putString(AppConstants.KEY_GOOGLE_ACCOUNT_NAME, googleAccountName);

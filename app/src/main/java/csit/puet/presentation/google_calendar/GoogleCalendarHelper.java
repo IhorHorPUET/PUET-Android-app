@@ -1,10 +1,12 @@
 package csit.puet.presentation.google_calendar;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.CalendarContract;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 import com.google.gson.reflect.TypeToken;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
@@ -35,6 +38,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -181,22 +185,83 @@ public class GoogleCalendarHelper {
         }
     }
 
-    public void addLessonsToCalendar(List<Lesson> lessons) {
+    public void addLessonsToCalendar(SharedPreferences prefSet) {
+        List<Lesson> newLessons = getLessonsFromPreferences(prefSet);
+        removeAllPuetEventsFromCalendar();
+        if (newLessons != null && !newLessons.isEmpty()) {
+            for (Lesson lesson : newLessons) {
+                String summary = lesson.getLesson();
+                String location = lesson.getRoom();
+                String description = "Тип: " + lesson.getLessonType() + "\nГрупа: " + lesson.getGroup() + "\nВикладач: " + lesson.getTeacher();
 
-        removeAllProgramEventsFromCalendar();
-        //Toast.makeText(context, "Запуск фор addLessonsToCalendar"+lessons.size(), Toast.LENGTH_LONG).show();
-        for (Lesson lesson : lessons) {
+                DateTime startDateTime = convertLessonToDateTime(lesson, true);
+                DateTime endDateTime = convertLessonToDateTime(lesson, false);
 
-            String summary = lesson.getLesson();
-            String location = lesson.getRoom();
-            String description = "Тип: " + lesson.getLessonType() + "\nГрупа: " + lesson.getGroup() + "\nВикладач: " + lesson.getTeacher();
-
-            DateTime startDateTime = convertLessonToDateTime(lesson, true);
-            DateTime endDateTime = convertLessonToDateTime(lesson, false);
-
-            if (startDateTime != null && endDateTime != null) {
-                addEvent(summary, location, description, startDateTime, endDateTime);
+                if (startDateTime != null && endDateTime != null) {
+                    addEvent(summary, location, description, startDateTime, endDateTime);
+                }
             }
+        }
+    }
+
+    public void removeAllPuetEventsFromCalendar() {
+        // Перевірка наявності дозволу на роботу з календарем
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            Log.w(TAG, "Потрібен дозвіл для роботи з календарем.");
+            Toast.makeText(context, "Потрібен дозвіл для роботи з календарем.", Toast.LENGTH_LONG).show();
+            return; // Вихід з методу, якщо дозвіл не надано
+        }
+
+        // Отримання імені облікового запису з SharedPreferences
+        SharedPreferences prefSet = context.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
+        String googleAccountName = prefSet.getString(AppConstants.KEY_GOOGLE_ACCOUNT_NAME, null);
+
+        // Ініціалізація GoogleAccountCredential з використанням імені облікового запису
+        GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(
+                        context,
+                        Collections.singleton("https://www.googleapis.com/auth/calendar.events"))
+                .setSelectedAccountName(googleAccountName);
+
+        // Перевірка, чи вибраний обліковий запис
+        if (credential == null || credential.getSelectedAccountName() == null) {
+            Log.w(TAG, "Обліковий запис Google не вибрано.");
+            Toast.makeText(context, "Обліковий запис Google не вибрано.", Toast.LENGTH_LONG).show();
+            return; // Вихід з методу, якщо обліковий запис не вибрано
+        }
+
+        try {
+            ContentResolver cr = context.getContentResolver();
+            Uri calendarUri = CalendarContract.Events.CONTENT_URI;
+
+            String selection = CalendarContract.Events.DESCRIPTION + " LIKE ?";
+            String[] selectionArgs = new String[]{"%" + AppConstants.PROGRAM_EVENT_DESCRIPTION + "%"};
+
+            int rowsDeleted = cr.delete(calendarUri, selection, selectionArgs);
+
+            if (rowsDeleted > 0) {
+                Log.d("CalendarCleanup", "Видалено " + rowsDeleted + " подій з календаря.");
+            } else {
+                Log.d("CalendarCleanup", "Події для видалення не знайдено або сталася помилка.");
+            }
+        } catch (SecurityException e) {
+            Log.e(TAG, "SecurityException: Не вдалося видалити події з календаря. Відсутні необхідні дозволи.", e);
+            Toast.makeText(context, "Помилка доступу до календаря: відсутні необхідні дозволи.", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Log.e(TAG, "Exception: Сталася помилка під час видалення подій з календаря.", e);
+            Toast.makeText(context, "Сталася помилка під час видалення подій з календаря.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+
+    private List<Lesson> getLessonsFromPreferences(SharedPreferences prefSet) {
+        String json = prefSet.getString(AppConstants.KEY_NEW_LESSONS, "");
+        if (!json.isEmpty()) {
+            return new Gson().fromJson(json, new TypeToken<List<Lesson>>() {
+            }.getType());
+        } else {
+            return new ArrayList<>();
         }
     }
 
@@ -222,48 +287,6 @@ public class GoogleCalendarHelper {
         } catch (DateTimeParseException e) {
             Log.e(TAG, "Error parsing date/time for lesson: " + lesson, e);
             return null;
-        }
-    }
-
-    public void removeAllProgramEventsFromCalendar() {
-        ContentResolver cr = context.getContentResolver();
-        Uri calendarUri = CalendarContract.Events.CONTENT_URI;
-
-       // Toast.makeText(context, "Запуск removeAllProgramEventsFromCalendar", Toast.LENGTH_LONG).show();
-
-        String selection = CalendarContract.Events.DESCRIPTION + " LIKE ?";
-        String[] selectionArgs = new String[]{"%" + AppConstants.PROGRAM_EVENT_DESCRIPTION + "%"};
-
-        int rowsDeleted = cr.delete(calendarUri, selection, selectionArgs);
-
-        if (rowsDeleted > 0) {
-            Log.d("CalendarCleanup", "Deleted " + rowsDeleted + " events from the calendar.");
-        } else {
-            Log.d("CalendarCleanup", "No events found to delete or an error occurred.");
-        }
-    }
-
-    public void updateLessonsFromPreferences(SharedPreferences prefSet) {
-        // Получаем список новых уроков из SharedPreferences
-        List<Lesson> newLessons = getLessonsFromPreferences(prefSet, AppConstants.KEY_NEW_LESSONS);
-
-        // Удаляем старые события с тэгом
-        removeAllProgramEventsFromCalendar();
-        //Toast.makeText(context, "newLessons.size="+newLessons.size(), Toast.LENGTH_LONG).show();
-        // Добавляем новые уроки в календарь
-        addLessonsToCalendar(newLessons);
-        //Toast.makeText(context, "Конец updateLessonsFromPreferences", Toast.LENGTH_LONG).show();
-    }
-
-    private List<Lesson> getLessonsFromPreferences(SharedPreferences prefSet, String key) {
-        // Логика извлечения списка уроков из SharedPreferences
-        // Пример: Сериализация и десериализация списка уроков в формате JSON
-        String json = prefSet.getString(key, "");
-        if (!json.isEmpty()) {
-            return new Gson().fromJson(json, new TypeToken<List<Lesson>>() {
-            }.getType());
-        } else {
-            return new ArrayList<>();
         }
     }
 }
