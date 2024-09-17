@@ -21,7 +21,7 @@ android {
         applicationId = "csit.puet"
         minSdk = 26
         targetSdk = 34
-        versionCode = 66
+        versionCode = 67
         versionName = generateVersionName(versionCode!!)
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -82,6 +82,7 @@ dependencies {
     // Google Account Credential
     implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation("com.google.api-client:google-api-client-android:1.32.2")
+    implementation("com.google.oauth-client:google-oauth-client-jetty:1.32.1")
     implementation("com.google.apis:google-api-services-calendar:v3-rev20240705-2.0.0")
     implementation("com.google.api-client:google-api-client:2.6.0")
     implementation ("com.google.android.play:integrity:1.4.0")

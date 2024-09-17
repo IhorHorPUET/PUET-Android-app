@@ -3,6 +3,8 @@ package csit.puet.presentation.app_settings;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Looper;
+import android.os.Handler;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -15,6 +17,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -31,12 +34,16 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 
+import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
 
 import android.accounts.AccountManager;
 import android.widget.Toast;
 
 import java.util.Collections;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -55,6 +62,7 @@ public class SettingsActivity extends AppCompatActivity {
     private String googleAccountName;
     private ActivityResultLauncher<Intent> accountPickerLauncher;
     private GoogleAccountCredential mCredential;
+    private boolean authorizationGranted = false;
 
     private LinearLayout dateRangeSection;
     CheckBox dateRangeCheckbox;
@@ -88,12 +96,15 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         prefSet = getSharedPreferences(AppConstants.PREF_SET, MODE_PRIVATE);
+        googleAccountName = prefSet.getString(AppConstants.KEY_GOOGLE_ACCOUNT_NAME, null);
 
         mCredential = GoogleAccountCredential.usingOAuth2(
                         this,
                         Collections.singleton("https://www.googleapis.com/auth/calendar.events"))
                 .setSelectedAccountName(googleAccountName);
-        mCredential.setSelectedAccountName(null);
+
+        checkAuthorizationStatus(() -> {
+        });
 
         ringtonePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -272,6 +283,7 @@ public class SettingsActivity extends AppCompatActivity {
                         if (googleAccountName != null) {
                             mCredential.setSelectedAccountName(googleAccountName);
                             googleAccountTextView.setText(googleAccountName);
+                            checkAndRequestConsent();
                         }
                     } else {
                         if (googleAccountName == null) {
@@ -410,6 +422,26 @@ public class SettingsActivity extends AppCompatActivity {
         endTimePicker.setMinute(endMinute);
     }
 
+    private void checkAuthorizationStatus(Runnable onComplete) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        executor.submit(() -> {
+            boolean isAuthorized = false;
+            try {
+                String token = mCredential.getToken();
+                isAuthorized = true;
+            } catch (Exception ignored) {
+            }
+            boolean finalIsAuthorized = isAuthorized;
+            handler.post(() -> {
+                authorizationGranted = finalIsAuthorized;
+                onComplete.run();
+            });
+        });
+    }
+
+
     private void saveSettings() {
         SharedPreferences.Editor editor = prefSet.edit();
 
@@ -419,10 +451,11 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putBoolean(AppConstants.KEY_WIDGET_ENABLED, isWidgetEnabled);
 
         boolean isGoogleCalendarEnabled = googleCalendarCheckbox.isChecked();
-        GoogleCalendarHelper calendarHelper = new GoogleCalendarHelper(this, mCredential);
-        if (!isGoogleCalendarEnabled || googleAccountName == null || ContextCompat.checkSelfPermission
-                (this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-            if (googleAccountName != null) {
+        GoogleCalendarHelper calendarHelper = new GoogleCalendarHelper(this, prefSet);
+        if (!isGoogleCalendarEnabled || googleAccountName == null ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED ||
+                !authorizationGranted) {
+            if (authorizationGranted) {
                 calendarHelper.removeAllPuetEventsFromCalendar();
             }
             isGoogleCalendarEnabled = false;
@@ -434,7 +467,7 @@ public class SettingsActivity extends AppCompatActivity {
                 editor.putBoolean(AppConstants.KEY_CALENDAR_PERMISSION_REVOCATION_SHOWN, true);
             }
         } else {
-            calendarHelper.addLessonsToCalendar(prefSet);
+            calendarHelper.addLessonsToCalendar("settings");
         }
         editor.putBoolean(AppConstants.KEY_GOOGLE_CALENDAR_ENABLED, isGoogleCalendarEnabled);
         editor.putString(AppConstants.KEY_GOOGLE_ACCOUNT_NAME, googleAccountName);
@@ -506,5 +539,32 @@ public class SettingsActivity extends AppCompatActivity {
     private void launchAccountPicker() {
         Intent accountPickerIntent = mCredential.newChooseAccountIntent();
         accountPickerLauncher.launch(accountPickerIntent);
+    }
+
+    private void checkAndRequestConsent() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_CALENDAR}, AppConstants.REQUEST_CALENDAR_PERMISSION);
+        } else {
+            new Thread(() -> {
+                try {
+                    String token = mCredential.getToken();
+                } catch (UserRecoverableAuthIOException e) {
+                    runOnUiThread(() -> startActivityForResult(e.getIntent(), AppConstants.REQUEST_AUTHORIZATION));
+                } catch (UserRecoverableAuthException e) {
+                    runOnUiThread(() -> startActivityForResult(e.getIntent(), AppConstants.REQUEST_AUTHORIZATION));
+                } catch (Exception e) {
+                    Toast.makeText(this, "Ви не надали дозвіл на використання календаря", Toast.LENGTH_LONG).show();
+                    runOnUiThread(() -> Toast.makeText(this, "Помилка: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                }
+            }).start();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        checkAuthorizationStatus(() -> {
+        });
     }
 }

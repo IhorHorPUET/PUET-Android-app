@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -12,6 +11,7 @@ import android.os.AsyncTask;
 import android.provider.CalendarContract;
 import android.util.Log;
 import android.widget.Toast;
+import android.util.Pair;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -31,12 +31,9 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.google.gson.Gson;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -48,63 +45,66 @@ import csit.puet.data.model.Lesson;
 
 public class GoogleCalendarHelper {
     private static final String TAG = "GoogleCalendarHelper";
-    private Calendar mService = null;
     private final Context context;
+    private final SharedPreferences sharedPreferences;
+    private GoogleAccountCredential credential;
+    private boolean authorizationGranted = true;
 
-    public GoogleCalendarHelper(Context context, GoogleAccountCredential credential) {
+    public GoogleCalendarHelper(Context context, SharedPreferences sharedPreferences) {
         this.context = context;
-        HttpTransport transport = new NetHttpTransport();
-        JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-        mService = new Calendar.Builder(transport, jsonFactory, credential)
-                .setApplicationName("PUET")
-                .build();
+        this.sharedPreferences = sharedPreferences;
+    }
+
+    private void initializeCredential() {
+        if (credential == null) {
+            String accountName = sharedPreferences.getString(AppConstants.KEY_GOOGLE_ACCOUNT_NAME, null);
+            credential = GoogleAccountCredential.usingOAuth2(
+                    context, Collections.singleton("https://www.googleapis.com/auth/calendar.events"));
+            credential.setSelectedAccountName(accountName);
+        }
     }
 
     private void addEvent(String summary, String location, String description, DateTime startDateTime, DateTime endDateTime) {
-        Log.d(TAG, "Starting to add event...");
-
         if (summary == null || summary.isEmpty()) {
-            Log.e(TAG, "Event summary is null or empty");
             return;
         }
         if (location == null || location.isEmpty()) {
-            Log.w(TAG, "Event location is null or empty, setting to 'Unknown location'");
             location = "Unknown location";
         }
         if (description == null) {
-            Log.w(TAG, "Event description is null, setting to an empty string");
             description = "";
         }
         if (startDateTime == null) {
-            Log.e(TAG, "Event startDateTime is null");
             return;
         }
         if (endDateTime == null) {
-            Log.e(TAG, "Event endDateTime is null");
             return;
         }
 
-        // Добавляем уникальный идентификатор в описание
         description += "\n" + AppConstants.PROGRAM_EVENT_DESCRIPTION;
 
-        Log.d(TAG, "Summary: " + summary);
-        Log.d(TAG, "Location: " + location);
-        Log.d(TAG, "Description: " + description);
-        Log.d(TAG, "Start DateTime: " + startDateTime);
-        Log.d(TAG, "End DateTime: " + endDateTime);
+        // Логгирование перед добавлением события
+        Log.d("GoogleCalendarHelper", "Adding event: " +
+                "\nSummary: " + summary +
+                "\nLocation: " + location +
+                "\nDescription: " + description +
+                "\nStart: " + startDateTime +
+                "\nEnd: " + endDateTime);
 
-        new AddEventTask(summary, location, description, startDateTime, endDateTime).execute();
+        new AddEventTask(credential, summary, location, description, startDateTime, endDateTime).execute();
     }
 
     private class AddEventTask extends AsyncTask<Void, Void, Void> {
         private Exception mLastError = null;
+        private final GoogleAccountCredential credential;
         private final String summary;
         private final String location;
         private final String description;
         private final DateTime startDateTime;
         private final DateTime endDateTime;
 
-        AddEventTask(String summary, String location, String description, DateTime startDateTime, DateTime endDateTime) {
+        AddEventTask(GoogleAccountCredential credential, String summary, String location, String description, DateTime startDateTime, DateTime endDateTime) {
+            this.credential = credential;
             this.summary = summary;
             this.location = location;
             this.description = description;
@@ -114,12 +114,18 @@ public class GoogleCalendarHelper {
 
         @Override
         protected Void doInBackground(Void... params) {
-            Log.d(TAG, "Executing AddEventTask...");
             try {
+                HttpTransport transport = new NetHttpTransport();
+                JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+                Calendar service = new Calendar.Builder(transport, jsonFactory, credential)
+                        .setApplicationName("PUET")
+                        .build();
+
                 Event event = new Event()
                         .setSummary(summary)
                         .setLocation(location)
-                        .setDescription(description);
+                        .setDescription(description)
+                        .setColorId("10");
 
                 EventDateTime start = new EventDateTime()
                         .setDateTime(startDateTime)
@@ -131,21 +137,13 @@ public class GoogleCalendarHelper {
                         .setTimeZone(TimeZone.getDefault().getID());
                 event.setEnd(end);
 
-                Log.d(TAG, "Inserting event into calendar...");
                 String calendarId = "primary";
-                mService.events().insert(calendarId, event).execute();
-                Log.d(TAG, "Event successfully added to calendar");
+                service.events().insert(calendarId, event).execute();
             } catch (Exception e) {
                 mLastError = e;
-                Log.e(TAG, "Error occurred while adding event: " + e.getMessage(), e);
                 cancel(true);
             }
             return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            Toast.makeText(context, "Event added to calendar", Toast.LENGTH_LONG).show();
         }
 
         @Override
@@ -160,100 +158,100 @@ public class GoogleCalendarHelper {
                             ((UserRecoverableAuthIOException) mLastError).getIntent(),
                             AppConstants.REQUEST_AUTHORIZATION);
                 } else {
-                    Toast.makeText(context, "The following error occurred:\n" + mLastError.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Сталася така помилка:\n" + mLastError.getMessage(), Toast.LENGTH_LONG).show();
                 }
             } else {
-                Toast.makeText(context, "Request cancelled.", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Запит скасовано.", Toast.LENGTH_LONG).show();
             }
         }
 
         void showGooglePlayServicesAvailabilityErrorDialog(final int connectionStatusCode) {
-            ((Activity) context).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    AlertDialog dialog = new AlertDialog.Builder(context)
-                            .setMessage("Google Play Services is not available.")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .create();
-                    dialog.show();
-                }
+            ((Activity) context).runOnUiThread(() -> {
+                AlertDialog dialog = new AlertDialog.Builder(context)
+                        .setMessage("Сервіси Google Play недоступні.")
+                        .setPositiveButton("OK", (dialog1, which) -> {
+                        })
+                        .create();
+                dialog.show();
             });
         }
     }
 
-    public void addLessonsToCalendar(SharedPreferences prefSet) {
-        List<Lesson> newLessons = getLessonsFromPreferences(prefSet);
+    public void addLessonsToCalendar(String autor) {
+        List<Lesson> newLessons = getLessonsFromPreferences(sharedPreferences);
         removeAllPuetEventsFromCalendar();
-        if (newLessons != null && !newLessons.isEmpty()) {
+        int eventsAdded = 0;
+        ZonedDateTime currentDateTime = ZonedDateTime.now(ZoneId.of("Europe/Kiev"));
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        String formattedTime = currentDateTime.format(timeFormatter);
+
+        if (authorizationGranted && newLessons != null && !newLessons.isEmpty()) {
             for (Lesson lesson : newLessons) {
-                String summary = lesson.getLesson();
-                String location = lesson.getRoom();
-                String description = "Тип: " + lesson.getLessonType() + "\nГрупа: " + lesson.getGroup() + "\nВикладач: " + lesson.getTeacher();
+                String summary = autor + " " + formattedTime + " " +
+                        lesson.getLesson() + ". " +
+                        lesson.getTeacher() + ". " +
+                        lesson.getGroup();
 
-                DateTime startDateTime = convertLessonToDateTime(lesson, true);
-                DateTime endDateTime = convertLessonToDateTime(lesson, false);
+                String description = "Час додавання: " + formattedTime + "   " + autor;
 
-                if (startDateTime != null && endDateTime != null) {
-                    addEvent(summary, location, description, startDateTime, endDateTime);
-                }
+                Pair<String, String> startAndEndTime = GoogleCalendarUtils.getLessonStartAndEndTime(lesson.getNum());
+                DateTime startDateTime = GoogleCalendarUtils.convertToDateTime(lesson.getDate(), startAndEndTime.first);
+                DateTime endDateTime = GoogleCalendarUtils.convertToDateTime(lesson.getDate(), startAndEndTime.second);
+
+                String location = lesson.getNum() + " пара " + "(" + lesson.getLessonType() + ") " +
+                        ("дом_ПК".equals(lesson.getRoom()) ? "дистанційно" : lesson.getRoom());
+
+                addEvent(summary, location, description, startDateTime, endDateTime);
+                eventsAdded++;
             }
+            Toast.makeText(context, "Додано подій до календаря: " + eventsAdded, Toast.LENGTH_LONG).show();
         }
     }
 
     public void removeAllPuetEventsFromCalendar() {
-        // Перевірка наявності дозволу на роботу з календарем
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-            Log.w(TAG, "Потрібен дозвіл для роботи з календарем.");
-            Toast.makeText(context, "Потрібен дозвіл для роботи з календарем.", Toast.LENGTH_LONG).show();
-            return; // Вихід з методу, якщо дозвіл не надано
+        boolean isGoogleCalendarEnabled = sharedPreferences.getBoolean(
+                AppConstants.KEY_GOOGLE_CALENDAR_ENABLED, false);
+
+        boolean hasCalendarPermissions = ContextCompat.checkSelfPermission(
+                context, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED;
+
+        String accountName = sharedPreferences.getString(AppConstants.KEY_GOOGLE_ACCOUNT_NAME, null);
+        boolean isAccountSelected = accountName != null && !accountName.isEmpty();
+
+        if (!isGoogleCalendarEnabled || !hasCalendarPermissions || !isAccountSelected) {
+            authorizationGranted = false;
+            Toast.makeText(context, "первая проверка - ошибка" + "   " + isGoogleCalendarEnabled + "   " + hasCalendarPermissions + "   " + isAccountSelected, Toast.LENGTH_LONG).show();
+            return;
+        } else {
+            Toast.makeText(context, "первая проверка - нормально", Toast.LENGTH_LONG).show();
+            authorizationGranted = true;
         }
 
-        // Отримання імені облікового запису з SharedPreferences
-        SharedPreferences prefSet = context.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
-        String googleAccountName = prefSet.getString(AppConstants.KEY_GOOGLE_ACCOUNT_NAME, null);
-
-        // Ініціалізація GoogleAccountCredential з використанням імені облікового запису
-        GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(
-                        context,
-                        Collections.singleton("https://www.googleapis.com/auth/calendar.events"))
-                .setSelectedAccountName(googleAccountName);
-
-        // Перевірка, чи вибраний обліковий запис
-        if (credential == null || credential.getSelectedAccountName() == null) {
-            Log.w(TAG, "Обліковий запис Google не вибрано.");
-            Toast.makeText(context, "Обліковий запис Google не вибрано.", Toast.LENGTH_LONG).show();
-            return; // Вихід з методу, якщо обліковий запис не вибрано
+        initializeCredential();
+        if (credential.getSelectedAccountName() == null) {
+            Toast.makeText(context, "вторая проверка - ошибка", Toast.LENGTH_LONG).show();
+            authorizationGranted = false;
+            return;
+        } else {
+            Toast.makeText(context, "вторая проверка - нормально", Toast.LENGTH_LONG).show();
+            authorizationGranted = true;
         }
 
-        try {
-            ContentResolver cr = context.getContentResolver();
-            Uri calendarUri = CalendarContract.Events.CONTENT_URI;
 
-            String selection = CalendarContract.Events.DESCRIPTION + " LIKE ?";
-            String[] selectionArgs = new String[]{"%" + AppConstants.PROGRAM_EVENT_DESCRIPTION + "%"};
+        int rowsDeleted = 0;
+        ContentResolver cr = context.getContentResolver();
+        Uri calendarUri = CalendarContract.Events.CONTENT_URI;
+        String selection = CalendarContract.Events.DESCRIPTION + " LIKE ?";
+        String[] selectionArgs = new String[]{"%" + AppConstants.PROGRAM_EVENT_DESCRIPTION + "%"};
 
-            int rowsDeleted = cr.delete(calendarUri, selection, selectionArgs);
+        rowsDeleted = cr.delete(calendarUri, selection, selectionArgs);
 
-            if (rowsDeleted > 0) {
-                Log.d("CalendarCleanup", "Видалено " + rowsDeleted + " подій з календаря.");
-            } else {
-                Log.d("CalendarCleanup", "Події для видалення не знайдено або сталася помилка.");
-            }
-        } catch (SecurityException e) {
-            Log.e(TAG, "SecurityException: Не вдалося видалити події з календаря. Відсутні необхідні дозволи.", e);
-            Toast.makeText(context, "Помилка доступу до календаря: відсутні необхідні дозволи.", Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            Log.e(TAG, "Exception: Сталася помилка під час видалення подій з календаря.", e);
-            Toast.makeText(context, "Сталася помилка під час видалення подій з календаря.", Toast.LENGTH_LONG).show();
+        if (rowsDeleted > 0) {
+            Toast.makeText(context, "Видалено подій з календаря: " + rowsDeleted, Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(context, "Не знайдено подій для видалення або сталася помилка.", Toast.LENGTH_LONG).show();
         }
     }
-
-
 
     private List<Lesson> getLessonsFromPreferences(SharedPreferences prefSet) {
         String json = prefSet.getString(AppConstants.KEY_NEW_LESSONS, "");
@@ -262,31 +260,6 @@ public class GoogleCalendarHelper {
             }.getType());
         } else {
             return new ArrayList<>();
-        }
-    }
-
-    private DateTime convertLessonToDateTime(Lesson lesson, boolean isStart) {
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-            LocalDate localDate = LocalDate.parse(lesson.getDate(), formatter);
-
-            int hour = 8;
-            int minute = 0;
-            if (lesson.getNum() == 2) {
-                hour = 10;
-            } else if (lesson.getNum() == 3) {
-                hour = 12;
-            }
-
-            if (!isStart) {
-                hour += 1;
-            }
-
-            LocalDateTime localDateTime = LocalDateTime.of(localDate, LocalTime.of(hour, minute));
-            return new DateTime(localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
-        } catch (DateTimeParseException e) {
-            Log.e(TAG, "Error parsing date/time for lesson: " + lesson, e);
-            return null;
         }
     }
 }

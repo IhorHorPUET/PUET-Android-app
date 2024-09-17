@@ -52,6 +52,7 @@ import csit.puet.data.model.Lesson;
 import csit.puet.data.model.Teacher;
 import csit.puet.presentation.app_settings.ScheduleSync;
 import csit.puet.presentation.app_settings.SettingsActivity;
+import csit.puet.presentation.google_calendar.GoogleCalendarHelper;
 import csit.puet.presentation.google_calendar.GoogleCalendarUtils;
 import csit.puet.presentation.ui.AdapterClassroomName;
 import csit.puet.presentation.ui.AdapterGroupName;
@@ -440,6 +441,10 @@ public class MainActivity extends AppCompatActivity {
                         String newLessonsJson = gson.toJson(catalogSchedules.get(0));
                         editor.putString("newLessonsFirst", newLessonsJson);
                         editor.apply();
+
+                        WidgetUtils.updateWidget(MainActivity.this, prefSet);
+                        GoogleCalendarHelper calendarHelper = new GoogleCalendarHelper(MainActivity.this, prefSet);
+                        calendarHelper.addLessonsToCalendar("main");
                     }
                 }
 
@@ -486,7 +491,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         viewPager.setVisibility(View.VISIBLE);
-        WidgetUtils.updateWidget(this, prefSet);
     }
 
     public void touchableOn(View progressBar) {
