@@ -15,12 +15,12 @@
     <color name="light3_blue">#DEF1F6</color>
     <color name="light4_blue">#F2FCFF</color>
 
-    <color name="top">#1C4BD1</color>
-    <color name="background">#F2FCFF</color>
-    <color name="textColor">#FF000000</color>
-    <color name="textColorPrimary">#3F048F</color>
-    <color name="colorPrimary">#159CAF</color>
-    <color name="colorAccent">#061FAB</color>
-    <color name="lesson">#EAE9E9</color>
+    <color name="top">#FF000000</color>
+    <color name="background">#09486D</color>
+    <color name="textColor">#FFFFFFFF</color>
+    <color name="textColorPrimary">#D5F0F4</color>
+    <color name="colorPrimary">#56B4C2</color>
+    <color name="colorAccent">#2FA6B8</color>
+    <color name="lesson">#616F7F</color>
 
 </resources>

@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/light1_gray"
+        android:background="@color/background"
         android:orientation="vertical">
 
         <!-- Контейнер для 'Розклад занять в ПУЕТ' -->
@@ -19,7 +19,7 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:background="@color/blue_darker"
+                android:background="@color/top"
                 android:layout_height="?attr/actionBarSize">
 
                 <LinearLayout
@@ -43,7 +43,7 @@
                         android:id="@+id/settings_button"
                         android:layout_width="70dp"
                         android:layout_height="wrap_content"
-                        android:background="@color/blue_darker"
+                        android:background="@color/top"
                         android:contentDescription="@string/settings"
                         android:paddingEnd="5dp"
                         android:src="@drawable/gear_light_50"
@@ -57,7 +57,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@color/light4_blue"
             android:fillViewport="true">
 
             <LinearLayout
@@ -85,7 +84,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:textColor="@color/black"
                         android:text="@string/select_search_parameters"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
                 </LinearLayout>
@@ -108,7 +106,6 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/black"
                             android:textSize="15sp"
                             android:text="@string/start_date_label"
                             android:labelFor="@id/startDate"
@@ -123,12 +120,8 @@
                             android:drawablePadding="10dp"
                             android:focusable="false"
                             android:gravity="center"
-                            android:textColor="@color/black"
-                            android:textColorHint="@color/black"
                             android:hint="@string/select_start_date"
-                            android:textSize="15sp"
-                            android:contentDescription="@string/start_date_picker"
-                            tools:ignore="ContentDescription" />
+                            android:textSize="15sp" />
                     </LinearLayout>
 
                     <!-- Отступ между двумя LinearLayout -->
@@ -147,7 +140,6 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/black"
                             android:textSize="15sp"
                             android:text="@string/end_date_label"
                             android:contentDescription="@string/end_date_label" />
@@ -162,11 +154,7 @@
                             android:focusable="false"
                             android:gravity="center"
                             android:hint="@string/select_end_date"
-                            android:textColor="@color/black"
-                            android:textColorHint="@color/black"
-                            android:textSize="15sp"
-                            android:contentDescription="@string/end_date_picker"
-                            tools:ignore="ContentDescription" />
+                            android:textSize="15sp"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -183,7 +171,6 @@
                         android:layout_height="wrap_content"
                         android:gravity="start"
                         android:text="@string/teacher_label"
-                        android:textColor="@color/black"
                         android:textSize="18sp"/>
 
                     <LinearLayout
@@ -199,16 +186,14 @@
                             android:layout_weight="1"
                             android:hint="@string/select_name_teacher"
                             android:inputType="text"
-                            android:textColor="@color/black"
-                            android:textColorHint="@color/black"
                             android:textSize="18sp" />
 
                         <ImageButton
                             android:id="@+id/clearButtonTeacherName"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
+                            android:background="@color/background"
                             android:src="@drawable/cleaning_button"
-                            android:background="@color/light4_blue"
                             android:visibility="gone"
                             android:contentDescription="@string/clear_teacher_names" />
                     </LinearLayout>
@@ -226,7 +211,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="start"
-                        android:textColor="@color/black"
                         android:text="@string/room_label"
                         android:textSize="18sp" />
 
@@ -242,8 +226,6 @@
                             android:layout_height="48dp"
                             android:layout_weight="1"
                             android:hint="@string/select_name_room"
-                            android:textColor="@color/black"
-                            android:textColorHint="@color/black"
                             android:inputType="text"
                             android:textSize="18sp" />
 
@@ -251,8 +233,8 @@
                             android:id="@+id/clearButtonClassroomName"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
+                            android:background="@color/background"
                             android:src="@drawable/cleaning_button"
-                            android:background="@color/light4_blue"
                             android:visibility="gone"
                             android:contentDescription="@string/clear_classroom_numbers" />
                     </LinearLayout>
@@ -271,7 +253,6 @@
                         android:layout_height="wrap_content"
                         android:gravity="start"
                         android:text="@string/group_label"
-                        android:textColor="@color/black"
                         android:textSize="18sp" />
 
                     <LinearLayout
@@ -286,8 +267,6 @@
                             android:layout_height="48dp"
                             android:layout_weight="1"
                             android:hint="@string/select_group"
-                            android:textColor="@color/black"
-                            android:textColorHint="@color/black"
                             android:inputType="text"
                             android:textSize="18sp" />
 
@@ -295,8 +274,8 @@
                             android:id="@+id/clearButtonGroupName"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
+                            android:background="@color/background"
                             android:src="@drawable/cleaning_button"
-                            android:background="@color/light4_blue"
                             android:visibility="gone"
                             android:contentDescription="@string/clear_group_numbers" />
                     </LinearLayout>
@@ -321,28 +300,32 @@
                         android:layout_weight="1"
                         android:gravity="start|center_vertical"
                         android:text="@string/remember_selection"
-                        android:textColor="@color/black"
                         android:textColorHint="@color/black"
                         android:textSize="18sp" />
                 </LinearLayout>
 
-                <!-- Кнопка 'Пошук' -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/searchButton"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="@string/search"
-                    android:textSize="24sp"
-                    app:backgroundTint="@null"
-                    android:background="@drawable/button_selector" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/searchButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="10dp"
+                        android:padding="10dp"
+                        android:text="@string/search"
+                        android:textSize="24sp" />
+                </LinearLayout>
 
                 <!-- Контейнер для 'Расписания' -->
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tabs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/light_blue"
                     android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@id/searchButton"
                     app:tabMode="scrollable" />
@@ -356,6 +339,11 @@
                     app:layout_constraintTop_toBottomOf="@id/tabs">
                 </androidx.viewpager2.widget.ViewPager2>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:background="@color/colorPrimary" />
+
                 <!-- Контейнер для текста -->
                 <TextView
                     android:id="@+id/infoBlock"
@@ -365,9 +353,13 @@
                     android:padding="16dp"
                     android:text="@string/Info"
                     android:textSize="16sp"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black"
+                    android:textColorHint="@color/textColor"
                     android:visibility="visible" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:background="@color/colorPrimary" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>

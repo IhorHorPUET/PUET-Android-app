@@ -1,24 +1,25 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-     <style name="Base.Theme.PUET" parent="Theme.Material3.Light.NoActionBar">
+     <style name="Theme.PUET" parent="Theme.Material3.Light.NoActionBar">
 
          <!-- Customize your light theme here. -->
-         <item name="colorPrimary">@color/dark_gray</item>
-         <item name="colorAccent">@color/blue</item>
+         <item name="colorPrimary">@color/colorPrimary</item>
+         <item name="colorAccent">@color/colorAccent</item>
+         <item name="android:textColor">@color/textColor</item>
+         <item name="android:textColorPrimary">@color/textColorPrimary</item>
     </style>
 
-    <style name="DatePickerDialogTheme" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorAccent">@color/blue_darker</item> <!-- Цвет акцента -->
-        <item name="android:textColorPrimary">@color/black</item> <!-- Цвет основного текста -->
-        <item name="android:buttonBarNegativeButtonStyle">@style/AlertDialogButtonStyle</item>
-        <item name="android:buttonBarPositiveButtonStyle">@style/AlertDialogButtonStyle</item>
-        <item name="android:textSize">48sp</item>
-    </style>
+<!--    <style name="DatePickerDialogTheme" parent="Theme.AppCompat.Light.Dialog">-->
+<!--        <item name="colorAccent">@color/blue_darker</item> &lt;!&ndash; Цвет акцента &ndash;&gt;-->
+<!--        <item name="android:textColorPrimary">@color/black</item> &lt;!&ndash; Цвет основного текста &ndash;&gt;-->
+<!--        <item name="android:buttonBarNegativeButtonStyle">@style/AlertDialogButtonStyle</item>-->
+<!--        <item name="android:buttonBarPositiveButtonStyle">@style/AlertDialogButtonStyle</item>-->
+<!--        <item name="android:textSize">30sp</item>-->
+<!--    </style>-->
 
-    <style name="AlertDialogButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">@color/blue_darker</item> <!-- Цвет текста кнопок -->
-        <item name="android:textSize">26sp</item>
-    </style>
+<!--    <style name="AlertDialogButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">-->
+<!--        <item name="android:textColor">@color/blue_darker</item> &lt;!&ndash; Цвет текста кнопок &ndash;&gt;-->
+<!--        <item name="android:textSize">20sp</item>-->
+<!--    </style>-->
 
-    <style name="Theme.PUET" parent="Base.Theme.PUET" />
 </resources>

@@ -38,7 +38,6 @@ public class CalendarManager {
     public void showStartDatePicker() {
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 context,
-                R.style.DatePickerDialogTheme,
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
@@ -70,7 +69,6 @@ public class CalendarManager {
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 context,
-                R.style.DatePickerDialogTheme,
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int year, int month, int day) {

@@ -1,10 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.PUET" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.PUET" parent="Theme.Material3.Dark.NoActionBar">
         <!-- Customize your dark theme here. -->
-        <item name="colorPrimary">@color/gray</item>
-        <item name="colorAccent">@color/blue</item>
-        <!-- Добавьте другие элементы по необходимости -->
+<!--        <item name="colorPrimary">@color/gray_darker</item>-->
+<!--        <item name="colorAccent">@color/blue_darker</item>-->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary</item> <!-- Цвет основного текста -->
     </style>
-
 </resources>

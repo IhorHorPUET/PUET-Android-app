@@ -158,7 +158,7 @@ public class GoogleCalendarHelper {
                             ((UserRecoverableAuthIOException) mLastError).getIntent(),
                             AppConstants.REQUEST_AUTHORIZATION);
                 } else {
-                    Toast.makeText(context, "Сталася така помилка:\n" + mLastError.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Помилка:\n" + mLastError.getMessage(), Toast.LENGTH_LONG).show();
                 }
             } else {
                 Toast.makeText(context, "Запит скасовано.", Toast.LENGTH_LONG).show();
@@ -187,12 +187,14 @@ public class GoogleCalendarHelper {
 
         if (authorizationGranted && newLessons != null && !newLessons.isEmpty()) {
             for (Lesson lesson : newLessons) {
-                String summary = autor + " " + formattedTime + " " +
+                String summary =
+//                        autor + " " + formattedTime + " " +
                         lesson.getLesson() + ". " +
                         lesson.getTeacher() + ". " +
                         lesson.getGroup();
 
-                String description = "Час додавання: " + formattedTime + "   " + autor;
+                String description = "";
+//                        "Час додавання: " + formattedTime + "   " + autor;
 
                 Pair<String, String> startAndEndTime = GoogleCalendarUtils.getLessonStartAndEndTime(lesson.getNum());
                 DateTime startDateTime = GoogleCalendarUtils.convertToDateTime(lesson.getDate(), startAndEndTime.first);
@@ -220,20 +222,20 @@ public class GoogleCalendarHelper {
 
         if (!isGoogleCalendarEnabled || !hasCalendarPermissions || !isAccountSelected) {
             authorizationGranted = false;
-            Toast.makeText(context, "первая проверка - ошибка" + "   " + isGoogleCalendarEnabled + "   " + hasCalendarPermissions + "   " + isAccountSelected, Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, "первая проверка - ошибка" + "   " + isGoogleCalendarEnabled + "   " + hasCalendarPermissions + "   " + isAccountSelected, Toast.LENGTH_LONG).show();
             return;
         } else {
-            Toast.makeText(context, "первая проверка - нормально", Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, "первая проверка - нормально", Toast.LENGTH_LONG).show();
             authorizationGranted = true;
         }
 
         initializeCredential();
         if (credential.getSelectedAccountName() == null) {
-            Toast.makeText(context, "вторая проверка - ошибка", Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, "вторая проверка - ошибка", Toast.LENGTH_LONG).show();
             authorizationGranted = false;
             return;
         } else {
-            Toast.makeText(context, "вторая проверка - нормально", Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, "вторая проверка - нормально", Toast.LENGTH_LONG).show();
             authorizationGranted = true;
         }
 

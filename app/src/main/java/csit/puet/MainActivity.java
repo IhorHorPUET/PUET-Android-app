@@ -23,7 +23,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
-import androidx.work.BackoffPolicy;
 import androidx.work.Constraints;
 import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
@@ -96,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         PresentationUtils.applySavedTheme(this);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_interface);
+        setContentView(R.layout.activity_main);
         prefSet = this.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
         prefData = this.getSharedPreferences(AppConstants.PREF_DATA, Context.MODE_PRIVATE);
 
@@ -406,7 +405,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void search() {
         touchableOff(progressBar);
-        PresentationUtils.vibrate(MainActivity.this, 80);
+        PresentationUtils.vibrate(MainActivity.this, 40);
 
         if (Objects.equals(teacherId, "") & Objects.equals(classroomId, "") & Objects.equals(groupName, "")) {
             runOnUiThread(() -> new AlertDialog.Builder(MainActivity.this)
@@ -505,8 +504,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startBackgroundUpdate() {
-        boolean autoUpdate = prefSet.getBoolean(AppConstants.KEY_UPDATE_ENABLED, false);
-        int updateInterval = prefSet.getInt(AppConstants.KEY_UPDATE_INTERVAL, 24); // Default to 24 hours if not set
+        boolean autoUpdate = prefSet.getBoolean(AppConstants.KEY_AUTO_UPDATE_ENABLED, false);
+        int updateInterval = prefSet.getInt(AppConstants.KEY_AUTO_UPDATE_INTERVAL, 24); // Default to 24 hours if not set
 
         WorkManager.getInstance(this).cancelAllWorkByTag("scheduleSync");
         WorkManager.getInstance(this).cancelAllWorkByTag("csit.puet.presentation.app_settings.ScheduleSync");
@@ -521,8 +520,8 @@ public class MainActivity extends AppCompatActivity {
             WorkRequest dataSyncWorkRequest = new PeriodicWorkRequest.Builder(
                     ScheduleSync.class, updateInterval, TimeUnit.HOURS)
 //                    ScheduleSync.class, 15, TimeUnit.MINUTES)
-                    .setBackoffCriteria(BackoffPolicy.LINEAR, 15, TimeUnit.MINUTES)
-//                    .setInitialDelay(10, TimeUnit.MINUTES)
+//                    .setBackoffCriteria(BackoffPolicy.LINEAR, 15, TimeUnit.MINUTES)
+                    .setInitialDelay(20, TimeUnit.MINUTES)
                     .setConstraints(constraints)
                     .addTag("scheduleSync")
                     .build();

@@ -185,36 +185,36 @@ public class SettingsActivity extends AppCompatActivity {
 
         selectedTheme = prefSet.getInt(AppConstants.KEY_THEME, AppConstants.THEME_SYSTEM);
 
-        boolean isWidgetEnabled = prefSet.getBoolean(AppConstants.KEY_WIDGET_ENABLED, false);
-        widgetCheckbox.setChecked(isWidgetEnabled);
+        boolean isWidgetCheckboxEnabled = prefSet.getBoolean(AppConstants.KEY_WIDGET_ENABLED, false);
+        widgetCheckbox.setChecked(isWidgetCheckboxEnabled);
 
-        boolean isGoogleCalendarEnabled;
+        boolean isCalendarCheckboxEnabled;
         if (ContextCompat.checkSelfPermission
                 (this, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
-            isGoogleCalendarEnabled = prefSet.getBoolean(AppConstants.KEY_GOOGLE_CALENDAR_ENABLED, false);
+            isCalendarCheckboxEnabled = prefSet.getBoolean(AppConstants.KEY_GOOGLE_CALENDAR_ENABLED, false);
             googleAccountName = prefSet.getString(AppConstants.KEY_GOOGLE_ACCOUNT_NAME, null);
         } else {
-            isGoogleCalendarEnabled = false;
+            isCalendarCheckboxEnabled = false;
             googleAccountName = null;
         }
 
-        boolean dateRangeEnabled = prefSet.getBoolean(AppConstants.KEY_DATE_RANGE_ENABLED, false);
+        boolean dateRangeCheckboxEnabled = prefSet.getBoolean(AppConstants.KEY_DATE_RANGE_ENABLED, false);
         int dateRange = prefSet.getInt(AppConstants.KEY_DATE_RANGE_INTERVAL, 7);
 
-        boolean autoUpdate = prefSet.getBoolean(AppConstants.KEY_UPDATE_ENABLED, false);
-        int updateInterval = prefSet.getInt(AppConstants.KEY_UPDATE_INTERVAL, 24);
+        boolean autoUpdateCheckbox = prefSet.getBoolean(AppConstants.KEY_AUTO_UPDATE_ENABLED, false);
+        int autoUpdateInterval = prefSet.getInt(AppConstants.KEY_AUTO_UPDATE_INTERVAL, 24);
 
-        boolean notificationsEnabled = prefSet.getBoolean(AppConstants.KEY_NOTIFICATIONS_ENABLED, false);
-        boolean isTextMessageEnabled = prefSet.getBoolean(AppConstants.KEY_TEXT_MESSAGE_ENABLED, false);
-        boolean vibrationEnabled = prefSet.getBoolean(AppConstants.KEY_VIBRATION_ENABLED, false);
-        boolean soundEnabled = prefSet.getBoolean(AppConstants.KEY_SOUND_ENABLED, false);
+        boolean notificationsCheckboxEnabled = prefSet.getBoolean(AppConstants.KEY_NOTIFICATIONS_ENABLED, false);
+        boolean isTextMessageCheckboxEnabled = prefSet.getBoolean(AppConstants.KEY_TEXT_MESSAGE_ENABLED, false);
+        boolean vibrationCheckboxEnabled = prefSet.getBoolean(AppConstants.KEY_VIBRATION_ENABLED, false);
+        boolean soundCheckboxEnabled = prefSet.getBoolean(AppConstants.KEY_SOUND_ENABLED, false);
         soundUriString = prefSet.getString(AppConstants.KEY_NOTIFICATION_SOUND_URI, "android.resource://" + getPackageName() + "/" + R.raw.allert);
         int notificationRepeat = prefSet.getInt(AppConstants.KEY_NOTIFICATION_REPEAT, 2);
         int notificationInterval = prefSet.getInt(AppConstants.KEY_NOTIFICATION_INTERVAL, 15);
 
-        boolean doNotDisturbEnabled = prefSet.getBoolean(AppConstants.KEY_DO_NOT_DISTURB_ENABLED, false);
-        doNotDisturbCheckbox.setChecked(doNotDisturbEnabled);
-        doNotDisturbOptionsSection.setVisibility(doNotDisturbEnabled ? View.VISIBLE : View.GONE);
+        boolean doNotDisturbCheckboxEnabled = prefSet.getBoolean(AppConstants.KEY_DO_NOT_DISTURB_ENABLED, false);
+        doNotDisturbCheckbox.setChecked(doNotDisturbCheckboxEnabled);
+        doNotDisturbOptionsSection.setVisibility(doNotDisturbCheckboxEnabled ? View.VISIBLE : View.GONE);
         int startTime = prefSet.getInt(AppConstants.KEY_DO_NOT_DISTURB_START_TIME, 1320); // Default 22:00 (1320 minutes)
         int endTime = prefSet.getInt(AppConstants.KEY_DO_NOT_DISTURB_END_TIME, 480); // Default 08:00 (480 minutes)
 
@@ -257,8 +257,8 @@ public class SettingsActivity extends AppCompatActivity {
             chkBoxLight.setChecked(false);
         });
 
-        googleCalendarSection.setVisibility(isGoogleCalendarEnabled ? View.VISIBLE : View.GONE);
-        googleCalendarCheckbox.setChecked(isGoogleCalendarEnabled);
+        googleCalendarSection.setVisibility(isCalendarCheckboxEnabled ? View.VISIBLE : View.GONE);
+        googleCalendarCheckbox.setChecked(isCalendarCheckboxEnabled);
 
         googleCalendarCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             googleCalendarSection.setVisibility(isChecked ? View.VISIBLE : View.GONE);
@@ -297,8 +297,8 @@ public class SettingsActivity extends AppCompatActivity {
             mCredential.setSelectedAccountName(googleAccountName);
         }
 
-        dateRangeSection.setVisibility(dateRangeEnabled ? View.VISIBLE : View.GONE);
-        dateRangeCheckbox.setChecked(dateRangeEnabled);
+        dateRangeSection.setVisibility(dateRangeCheckboxEnabled ? View.VISIBLE : View.GONE);
+        dateRangeCheckbox.setChecked(dateRangeCheckboxEnabled);
         dateRangeText.setText(getString(R.string.date_range, dateRange));
         dateRangeSeekBar.setProgress(dateRange - 1);
 
@@ -321,12 +321,12 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        autoUpdateSection.setVisibility(autoUpdate ? View.VISIBLE : View.GONE);
-        autoUpdateCheckbox.setChecked(autoUpdate);
-        autoUpdateIntervalValue.setText(getString(R.string.update_interval, updateInterval));
-        autoUpdateIntervalSeekBar.setProgress(updateInterval - 1);
+        autoUpdateSection.setVisibility(autoUpdateCheckbox ? View.VISIBLE : View.GONE);
+        this.autoUpdateCheckbox.setChecked(autoUpdateCheckbox);
+        autoUpdateIntervalValue.setText(getString(R.string.update_interval, autoUpdateInterval));
+        autoUpdateIntervalSeekBar.setProgress(autoUpdateInterval - 1);
 
-        autoUpdateCheckbox.setOnCheckedChangeListener((buttonView, isChecked) ->
+        this.autoUpdateCheckbox.setOnCheckedChangeListener((buttonView, isChecked) ->
                 autoUpdateSection.setVisibility(isChecked ? View.VISIBLE : View.GONE));
 
         autoUpdateIntervalSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -345,11 +345,11 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        notificationOptionsSection.setVisibility(notificationsEnabled ? View.VISIBLE : View.GONE);
-        notificationCheckbox.setChecked(notificationsEnabled);
-        textMessageCheckbox.setChecked(isTextMessageEnabled);
-        vibrationCheckbox.setChecked(vibrationEnabled);
-        soundCheckbox.setChecked(soundEnabled);
+        notificationOptionsSection.setVisibility(notificationsCheckboxEnabled ? View.VISIBLE : View.GONE);
+        notificationCheckbox.setChecked(notificationsCheckboxEnabled);
+        textMessageCheckbox.setChecked(isTextMessageCheckboxEnabled);
+        vibrationCheckbox.setChecked(vibrationCheckboxEnabled);
+        soundCheckbox.setChecked(soundCheckboxEnabled);
         notificationRepeatValue.setText(getString(R.string.notification_repeat, notificationRepeat));
         notificationRepeatSeekBar.setProgress(notificationRepeat - 1);
         notificationIntervalValue.setText(getString(R.string.notification_interval, notificationInterval));
@@ -403,11 +403,9 @@ public class SettingsActivity extends AppCompatActivity {
             ringtonePickerLauncher.launch(intent);
         });
 
-        // Set the checkbox state and visibility
-        doNotDisturbOptionsSection.setVisibility(doNotDisturbEnabled ? View.VISIBLE : View.GONE);
-        doNotDisturbCheckbox.setChecked(doNotDisturbEnabled);
+        doNotDisturbOptionsSection.setVisibility(doNotDisturbCheckboxEnabled ? View.VISIBLE : View.GONE);
+        doNotDisturbCheckbox.setChecked(doNotDisturbCheckboxEnabled);
 
-        // Handle checkbox changes
         doNotDisturbCheckbox.setOnCheckedChangeListener((buttonView, isChecked) ->
                 doNotDisturbOptionsSection.setVisibility(isChecked ? View.VISIBLE : View.GONE));
 
@@ -478,9 +476,9 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putInt(AppConstants.KEY_DATE_RANGE_INTERVAL, dateRange);
 
         boolean isAutoUpdateEnabled = autoUpdateCheckbox.isChecked();
-        editor.putBoolean(AppConstants.KEY_UPDATE_ENABLED, isAutoUpdateEnabled);
+        editor.putBoolean(AppConstants.KEY_AUTO_UPDATE_ENABLED, isAutoUpdateEnabled);
         int updateInterval = autoUpdateIntervalSeekBar.getProgress() + 1;
-        editor.putInt(AppConstants.KEY_UPDATE_INTERVAL, updateInterval);
+        editor.putInt(AppConstants.KEY_AUTO_UPDATE_INTERVAL, updateInterval);
 
         boolean isNotificationsEnabled = notificationCheckbox.isChecked();
         boolean isTextMessageEnabled = textMessageCheckbox.isChecked();
@@ -534,7 +532,34 @@ public class SettingsActivity extends AppCompatActivity {
                         Toast.LENGTH_LONG).show();
             }
         }
+        boolean readPermissionGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+        boolean writePermissionGranted = grantResults.length > 1 && grantResults[1] == PackageManager.PERMISSION_GRANTED;
+        if (readPermissionGranted && writePermissionGranted) {
+            launchAccountPicker();
+        } else {
+            Toast.makeText(this, " read="+readPermissionGranted+" write="+writePermissionGranted, Toast.LENGTH_LONG).show();
+        }
     }
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+//                                           @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if (requestCode == AppConstants.REQUEST_CALENDAR_PERMISSION) {
+//            if (grantResults.length > 0) {
+//                boolean readPermissionGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+//                boolean writePermissionGranted = grantResults.length > 1 && grantResults[1] == PackageManager.PERMISSION_GRANTED;
+//
+//                if (readPermissionGranted && writePermissionGranted) {
+//                    launchAccountPicker();
+//                } else {
+//                    Toast.makeText(this, " read=" + readPermissionGranted + " write=" + writePermissionGranted, Toast.LENGTH_LONG).show();
+//                }
+//            } else {
+//                Toast.makeText(this, "Потрібно надати дозвіл для використання календаря", Toast.LENGTH_LONG).show();
+//            }
+//        }
+//    }
 
     private void launchAccountPicker() {
         Intent accountPickerIntent = mCredential.newChooseAccountIntent();

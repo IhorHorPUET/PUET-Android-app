@@ -3,20 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_blue">
+    android:background="@color/background">
 
     <!-- AppBarLayout with CollapsingToolbarLayout -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/blue_darker"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+            android:background="@color/top">
 
             <LinearLayout
                 style="?android:attr/buttonBarStyle"
@@ -31,9 +29,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
-                    android:backgroundTint="@color/light_blue"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:textColor="@color/background"
                     android:text="@string/save"
-                    android:textColor="@color/black"
                     android:textSize="20sp" />
 
                 <Button
@@ -41,9 +39,9 @@
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/light_blue"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:textColor="@color/background"
                     android:text="@string/cancel"
-                    android:textColor="@color/black"
                     android:textSize="20sp" />
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
@@ -62,18 +60,11 @@
             android:orientation="vertical"
             android:padding="2dp">
 
-            <!-- Top Divider -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/gray" />
-
             <!-- Theme Selection Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:background="@color/light_blue"
                 android:orientation="vertical"
                 android:padding="2dp">
 
@@ -83,7 +74,6 @@
                     android:layout_marginVertical="2dp"
                     android:gravity="center"
                     android:text="@string/Choose_Theme"
-                    android:textColor="@color/black"
                     android:textSize="20sp" />
 
                 <CheckBox
@@ -92,8 +82,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:contentDescription="@string/As_System"
-                    android:text="@string/As_System"
-                    android:textColor="@color/black" />
+                    android:text="@string/As_System"/>
 
                 <CheckBox
                     android:id="@+id/chkBoxLight"
@@ -101,8 +90,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:contentDescription="@string/Always_Light"
-                    android:text="@string/Always_Light"
-                    android:textColor="@color/black" />
+                    android:text="@string/Always_Light"/>
 
                 <CheckBox
                     android:id="@+id/chkBoxDark"
@@ -110,14 +98,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:contentDescription="@string/Always_Dark"
-                    android:text="@string/Always_Dark"
-                    android:textColor="@color/black" />
+                    android:text="@string/Always_Dark"/>
 
                 <!-- Bottom Divider -->
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/gray" />
+                    android:layout_height="4dp"
+                    android:background="@color/top" />
 
             </LinearLayout>
 
@@ -126,7 +113,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:background="@color/light_blue"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="2dp">
@@ -137,7 +123,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:layout_marginEnd="2dp"
-                    android:contentDescription="@string/using_widget_title" />
+                    android:contentDescription="@string/using_widget" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -145,22 +131,20 @@
                     android:layout_marginStart="2dp"
                     android:layout_weight="1"
                     android:text="@string/using_widget"
-                    android:textColor="@color/black"
                     android:textSize="20sp" />
             </LinearLayout>
 
             <!-- Bottom Divider -->
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/gray" />
+                android:layout_height="4dp"
+                android:background="@color/top" />
 
             <!-- Google Calendar Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:background="@color/light_blue"
                 android:orientation="vertical"
                 android:padding="2dp">
 
@@ -183,8 +167,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="2dp"
                         android:layout_weight="1"
-                        android:text="@string/google_calendar_section_title"
-                        android:textColor="@color/black"
+                        android:text="@string/google_calendar_section"
                         android:textSize="20sp" />
                 </LinearLayout>
 
@@ -194,41 +177,38 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
-                    android:background="@color/light_blue"
                     android:orientation="vertical"
                     android:padding="0dp"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <TextView
                         android:id="@+id/googleAccountTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginStart="80dp"
                         android:layout_marginTop="4dp"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:layout_marginBottom="4dp"
+                        android:textSize="18sp"
+                        android:gravity="center"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="2dp"
-                        android:background="@color/light_blue"
-                        android:gravity="center_vertical"
+                        android:gravity="center"
                         android:orientation="horizontal"
-                        android:padding="0dp">
+                        android:padding="2dp">
 
                         <Button
                             android:id="@+id/googleAccountButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:layout_marginStart="90dp"
-                            android:backgroundTint="@color/light_gray"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:textColor="@color/background"
                             android:padding="10dp"
                             android:text="@string/select_google_account"
-                            android:textColor="@color/black"
-                            android:textSize="16sp" />
+                            android:textSize="18sp" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -236,15 +216,14 @@
             <!-- Bottom Divider -->
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/gray" />
+                android:layout_height="4dp"
+                android:background="@color/top" />
 
             <!-- Date Range Selection Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:background="@color/light_blue"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="2dp">
@@ -263,7 +242,6 @@
                     android:layout_marginVertical="2dp"
                     android:layout_weight="1"
                     android:text="@string/Choose_Date_Range"
-                    android:textColor="@color/black"
                     android:textSize="20sp" />
             </LinearLayout>
 
@@ -273,10 +251,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:background="@color/light_blue"
                 android:orientation="vertical"
                 android:padding="2dp"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <TextView
                     android:id="@+id/dateRangeText"
@@ -285,7 +262,6 @@
                     android:layout_marginBottom="30dp"
                     android:gravity="center_horizontal|top"
                     android:padding="2dp"
-                    android:textColor="@color/black"
                     android:textSize="16sp" />
 
                 <LinearLayout
@@ -299,7 +275,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:text="@string/min_date"
-                        android:textColor="@color/black"
                         android:textSize="16sp" />
 
                     <SeekBar
@@ -309,15 +284,13 @@
                         android:layout_marginBottom="8dp"
                         android:layout_weight="1"
                         android:contentDescription="@string/date_range_seekbar"
-                        android:max="29"
-                        android:textColor="@color/black" />
+                        android:max="29"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="@string/max_date"
-                        android:textColor="@color/black"
                         android:textSize="16sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -325,15 +298,14 @@
             <!-- Bottom Divider -->
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/gray" />
+                android:layout_height="4dp"
+                android:background="@color/top" />
 
             <!-- Auto Update Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:background="@color/light_blue"
                 android:orientation="vertical"
                 android:padding="2dp">
 
@@ -357,7 +329,6 @@
                         android:layout_marginVertical="2dp"
                         android:layout_weight="1"
                         android:text="@string/Auto_Update_Schedule"
-                        android:textColor="@color/black"
                         android:textSize="20sp" />
                 </LinearLayout>
 
@@ -367,10 +338,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
-                    android:background="@color/light_blue"
                     android:orientation="vertical"
                     android:padding="2dp"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <TextView
                         android:id="@+id/updateIntervalValue"
@@ -379,7 +349,6 @@
                         android:layout_marginBottom="30dp"
                         android:gravity="center_horizontal|top"
                         android:padding="2dp"
-                        android:textColor="@color/black"
                         android:textSize="16sp" />
 
                     <LinearLayout
@@ -393,7 +362,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="8dp"
                             android:text="@string/min_hour"
-                            android:textColor="@color/black"
                             android:textSize="16sp" />
 
                         <SeekBar
@@ -404,15 +372,13 @@
                             android:layout_weight="1"
                             android:contentDescription="@string/update_interval_seekbar"
                             android:max="23"
-                            android:progress="1"
-                            android:textColor="@color/black" />
+                            android:progress="1"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:text="@string/max_hour"
-                            android:textColor="@color/black"
                             android:textSize="16sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -420,8 +386,8 @@
                 <!-- Bottom Divider -->
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/gray" />
+                    android:layout_height="4dp"
+                    android:background="@color/top" />
 
             </LinearLayout>
 
@@ -430,7 +396,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:background="@color/light_blue"
                 android:orientation="vertical"
                 android:padding="2dp">
 
@@ -454,7 +419,6 @@
                         android:layout_marginVertical="2dp"
                         android:layout_weight="1"
                         android:text="@string/Notification_Settings"
-                        android:textColor="@color/black"
                         android:textSize="20sp" />
                 </LinearLayout>
 
@@ -464,16 +428,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
-                    android:background="@color/light_blue"
                     android:orientation="vertical"
                     android:padding="2dp"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="2dp"
-                        android:background="@color/light_blue"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:padding="0dp">
@@ -492,7 +454,6 @@
                             android:layout_marginStart="2dp"
                             android:layout_weight="1"
                             android:text="@string/text_message"
-                            android:textColor="@color/black"
                             android:textSize="16sp" />
                     </LinearLayout>
 
@@ -500,7 +461,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="2dp"
-                        android:background="@color/light_blue"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:padding="0dp">
@@ -519,7 +479,6 @@
                             android:layout_marginStart="2dp"
                             android:layout_weight="1"
                             android:text="@string/Vibration"
-                            android:textColor="@color/black"
                             android:textSize="16sp" />
                     </LinearLayout>
 
@@ -533,7 +492,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="2dp"
-                            android:background="@color/light_blue"
                             android:gravity="center_vertical"
                             android:orientation="horizontal"
                             android:padding="0dp">
@@ -552,7 +510,6 @@
                                 android:layout_marginStart="2dp"
                                 android:layout_weight="1"
                                 android:text="@string/Sound"
-                                android:textColor="@color/black"
                                 android:textSize="16sp" />
 
                             <Button
@@ -561,9 +518,10 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="start"
                                 android:layout_marginEnd="80dp"
-                                android:backgroundTint="@color/light_gray"
-                                android:text="@string/select_sound"
-                                android:textColor="@color/black" />
+                                android:backgroundTint="@color/colorPrimary"
+                                android:textColor="@color/background"
+                                android:textSize="18sp"
+                                android:text="@string/select_notification_sound" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -574,7 +532,6 @@
                         android:layout_marginBottom="30dp"
                         android:gravity="center_horizontal|top"
                         android:padding="2dp"
-                        android:textColor="@color/black"
                         android:textSize="16sp" />
 
                     <LinearLayout
@@ -588,7 +545,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="8dp"
                             android:text="@string/min_repeat"
-                            android:textColor="@color/black"
                             android:textSize="16sp" />
 
                         <SeekBar
@@ -599,15 +555,13 @@
                             android:layout_weight="1"
                             android:contentDescription="@string/notification_repeat_seekbar"
                             android:max="9"
-                            android:progress="0"
-                            android:textColor="@color/black" />
+                            android:progress="0"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:text="@string/max_repeat"
-                            android:textColor="@color/black"
                             android:textSize="16sp" />
                     </LinearLayout>
 
@@ -619,7 +573,6 @@
                         android:layout_marginBottom="30dp"
                         android:gravity="center_horizontal|top"
                         android:padding="2dp"
-                        android:textColor="@color/black"
                         android:textSize="16sp" />
 
                     <LinearLayout
@@ -633,7 +586,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="8dp"
                             android:text="@string/min_time_between_repeat"
-                            android:textColor="@color/black"
                             android:textSize="16sp" />
 
                         <SeekBar
@@ -644,15 +596,13 @@
                             android:layout_weight="1"
                             android:contentDescription="@string/notification_interval_seekbar"
                             android:max="55"
-                            android:progress="0"
-                            android:textColor="@color/black" />
+                            android:progress="0" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:text="@string/max_time_between_repeat"
-                            android:textColor="@color/black"
                             android:textSize="16sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -660,8 +610,8 @@
                 <!-- Bottom Divider -->
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/gray" />
+                    android:layout_height="4dp"
+                    android:background="@color/top" />
             </LinearLayout>
 
             <!-- Do Not Disturb Mode Section -->
@@ -669,7 +619,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:background="@color/light_blue"
                 android:orientation="vertical"
                 android:padding="2dp">
 
@@ -694,7 +643,6 @@
                         android:layout_marginVertical="2dp"
                         android:layout_weight="1"
                         android:text="@string/do_not_disturb"
-                        android:textColor="@color/black"
                         android:textSize="20sp" />
                 </LinearLayout>
 
@@ -704,10 +652,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
-                    android:background="@color/light_blue"
                     android:orientation="horizontal"
                     android:padding="2dp"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <!-- Start Time Block -->
                     <LinearLayout
@@ -722,7 +669,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
                             android:text="@string/start_time"
-                            android:textColor="@color/black"
                             android:textSize="16sp" />
 
                         <TimePicker
@@ -746,7 +692,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
                             android:text="@string/end_time"
-                            android:textColor="@color/black"
                             android:textSize="16sp" />
 
                         <TimePicker
@@ -754,7 +699,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:textColor="@color/black"
                             android:timePickerMode="spinner" />
                     </LinearLayout>
 
@@ -763,8 +707,8 @@
                 <!-- Bottom Divider -->
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/gray" />
+                    android:layout_height="4dp"
+                    android:background="@color/top" />
             </LinearLayout>
 
         </LinearLayout>

@@ -62,16 +62,13 @@
     <string name="cancel">Скасувати</string>
 
     <string name="Choose_Theme">Тема оформлення</string>
-    <string name="theme_switch">Тема оформлення</string>
     <string name="As_System">Системна</string>
     <string name="Always_Light">Завжди світла</string>
     <string name="Always_Dark">Завжди темна</string>
 
     <string name="using_widget">Використання віджету</string>
-    <string name="using_widget_title">Використання віджету для розкладу</string>
 
     <string name="google_calendar_section">Використання календаря Google</string>
-    <string name="google_calendar_section_title">Використання календаря Google</string>
     <string name="selected_account">Обраний акаунт: %1$s</string>
     <string name="no_account_selected">Вибір не зроблено</string>
     <string name="select_google_account">Вибір облікового запису</string>
@@ -92,7 +89,6 @@
     <string name="text_message">Текстове повідомлення</string>
     <string name="Vibration">Вібрація</string>
     <string name="Sound">Звук</string>
-    <string name="select_sound">Обрати мелодію</string>
     <string name="select_notification_sound">Вибір мелодії</string>
     <string name="notification_repeat_seekbar">Кількість повторів сповіщення</string>
     <string name="notification_repeat">Кількість повторів сповіщення: %1$d</string>

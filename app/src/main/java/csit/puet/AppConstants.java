@@ -26,8 +26,8 @@ public class AppConstants {
     public static final String KEY_DATE_RANGE_INTERVAL = "keyDateRange";
 
     // Update interval keys
-    public static final String KEY_UPDATE_ENABLED = "keyUpdateEnabled";
-    public static final String KEY_UPDATE_INTERVAL = "keyUpdateInterval";
+    public static final String KEY_AUTO_UPDATE_ENABLED = "keyUpdateEnabled";
+    public static final String KEY_AUTO_UPDATE_INTERVAL = "keyUpdateInterval";
 
     // Notification keys
     public static final String KEY_NOTIFICATIONS_ENABLED = "keyNotificationsEnabled";
