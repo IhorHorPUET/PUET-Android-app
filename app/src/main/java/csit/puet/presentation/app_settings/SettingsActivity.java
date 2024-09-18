@@ -48,6 +48,7 @@ import java.util.concurrent.Executors;
 public class SettingsActivity extends AppCompatActivity {
 
     SharedPreferences prefSet;
+    int duration = 20;
 
     private CheckBox chkBoxSystem;
     private CheckBox chkBoxLight;
@@ -163,14 +164,14 @@ public class SettingsActivity extends AppCompatActivity {
         endTimePicker.setIs24HourView(true);
 
         btnSave.setOnClickListener(v -> {
-            PresentationUtils.vibrate(this, 40);
+            PresentationUtils.vibrate(this, duration);
             saveSettings();
             setResult(RESULT_OK);
             finish();
         });
 
         btnCancel.setOnClickListener(v -> {
-            PresentationUtils.vibrate(this, 40);
+            PresentationUtils.vibrate(this, duration);
             setResult(RESULT_CANCELED);
             finish();
         });
@@ -234,7 +235,7 @@ public class SettingsActivity extends AppCompatActivity {
             if (!chkBoxSystem.isChecked()) {
                 chkBoxSystem.setChecked(true);
             }
-            selectedTheme = AppConstants.THEME_SYSTEM;
+            PresentationUtils.vibrate(this, duration);
             chkBoxLight.setChecked(false);
             chkBoxDark.setChecked(false);
         });
@@ -261,11 +262,12 @@ public class SettingsActivity extends AppCompatActivity {
         googleCalendarCheckbox.setChecked(isCalendarCheckboxEnabled);
 
         googleCalendarCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            PresentationUtils.vibrate(this, duration);
             googleCalendarSection.setVisibility(isChecked ? View.VISIBLE : View.GONE);
         });
 
         googleAccountButton.setOnClickListener(v -> {
-            PresentationUtils.vibrate(this, 40);
+            PresentationUtils.vibrate(this, duration);
             requestCalendarPermission();
         });
 
@@ -302,8 +304,10 @@ public class SettingsActivity extends AppCompatActivity {
         dateRangeText.setText(getString(R.string.date_range, dateRange));
         dateRangeSeekBar.setProgress(dateRange - 1);
 
-        dateRangeCheckbox.setOnCheckedChangeListener((buttonView, isChecked) ->
-                dateRangeSection.setVisibility(isChecked ? View.VISIBLE : View.GONE));
+        dateRangeCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            PresentationUtils.vibrate(this, duration);
+            dateRangeSection.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+        });
 
         dateRangeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -326,8 +330,10 @@ public class SettingsActivity extends AppCompatActivity {
         autoUpdateIntervalValue.setText(getString(R.string.update_interval, autoUpdateInterval));
         autoUpdateIntervalSeekBar.setProgress(autoUpdateInterval - 1);
 
-        this.autoUpdateCheckbox.setOnCheckedChangeListener((buttonView, isChecked) ->
-                autoUpdateSection.setVisibility(isChecked ? View.VISIBLE : View.GONE));
+        this.autoUpdateCheckbox.setOnCheckedChangeListener((buttonView, isChecked) ->{
+            PresentationUtils.vibrate(this, duration);
+            autoUpdateSection.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+        });
 
         autoUpdateIntervalSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -355,8 +361,10 @@ public class SettingsActivity extends AppCompatActivity {
         notificationIntervalValue.setText(getString(R.string.notification_interval, notificationInterval));
         notificationIntervalSeekBar.setProgress(notificationInterval - 15);
 
-        notificationCheckbox.setOnCheckedChangeListener((buttonView, isChecked) ->
-                notificationOptionsSection.setVisibility(isChecked ? View.VISIBLE : View.GONE));
+        notificationCheckbox.setOnCheckedChangeListener((buttonView, isChecked) ->{
+            PresentationUtils.vibrate(this, duration);
+            notificationOptionsSection.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+        });
 
         notificationRepeatSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -391,6 +399,7 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         selectSoundButton.setOnClickListener(v -> {
+            PresentationUtils.vibrate(this, duration);
             Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, getString(R.string.select_notification_sound));
@@ -406,8 +415,10 @@ public class SettingsActivity extends AppCompatActivity {
         doNotDisturbOptionsSection.setVisibility(doNotDisturbCheckboxEnabled ? View.VISIBLE : View.GONE);
         doNotDisturbCheckbox.setChecked(doNotDisturbCheckboxEnabled);
 
-        doNotDisturbCheckbox.setOnCheckedChangeListener((buttonView, isChecked) ->
-                doNotDisturbOptionsSection.setVisibility(isChecked ? View.VISIBLE : View.GONE));
+        doNotDisturbCheckbox.setOnCheckedChangeListener((buttonView, isChecked) ->{
+            PresentationUtils.vibrate(this, duration);
+            doNotDisturbOptionsSection.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+        });
 
         int startHour = startTime / 60;
         int startMinute = startTime % 60;
@@ -537,29 +548,9 @@ public class SettingsActivity extends AppCompatActivity {
         if (readPermissionGranted && writePermissionGranted) {
             launchAccountPicker();
         } else {
-            Toast.makeText(this, " read="+readPermissionGranted+" write="+writePermissionGranted, Toast.LENGTH_LONG).show();
+           // Toast.makeText(this, " read=" + readPermissionGranted + " write=" + writePermissionGranted, Toast.LENGTH_LONG).show();
         }
     }
-
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-//                                           @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == AppConstants.REQUEST_CALENDAR_PERMISSION) {
-//            if (grantResults.length > 0) {
-//                boolean readPermissionGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-//                boolean writePermissionGranted = grantResults.length > 1 && grantResults[1] == PackageManager.PERMISSION_GRANTED;
-//
-//                if (readPermissionGranted && writePermissionGranted) {
-//                    launchAccountPicker();
-//                } else {
-//                    Toast.makeText(this, " read=" + readPermissionGranted + " write=" + writePermissionGranted, Toast.LENGTH_LONG).show();
-//                }
-//            } else {
-//                Toast.makeText(this, "Потрібно надати дозвіл для використання календаря", Toast.LENGTH_LONG).show();
-//            }
-//        }
-//    }
 
     private void launchAccountPicker() {
         Intent accountPickerIntent = mCredential.newChooseAccountIntent();
@@ -588,7 +579,6 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         checkAuthorizationStatus(() -> {
         });
     }

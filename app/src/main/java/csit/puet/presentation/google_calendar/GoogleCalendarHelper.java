@@ -190,8 +190,7 @@ public class GoogleCalendarHelper {
                 String summary =
 //                        autor + " " + formattedTime + " " +
                         lesson.getLesson() + ". " +
-                        lesson.getTeacher() + ". " +
-                        lesson.getGroup();
+                                lesson.getTeacher() + ". ";
 
                 String description = "";
 //                        "Час додавання: " + formattedTime + "   " + autor;
@@ -200,7 +199,7 @@ public class GoogleCalendarHelper {
                 DateTime startDateTime = GoogleCalendarUtils.convertToDateTime(lesson.getDate(), startAndEndTime.first);
                 DateTime endDateTime = GoogleCalendarUtils.convertToDateTime(lesson.getDate(), startAndEndTime.second);
 
-                String location = lesson.getNum() + " пара " + "(" + lesson.getLessonType() + ") " +
+                String location = lesson.getNum() + " пара " + lesson.getGroup() + " " + "(" + lesson.getLessonType() + ") " +
                         ("дом_ПК".equals(lesson.getRoom()) ? "дистанційно" : lesson.getRoom());
 
                 addEvent(summary, location, description, startDateTime, endDateTime);

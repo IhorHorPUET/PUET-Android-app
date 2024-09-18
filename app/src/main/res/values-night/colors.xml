@@ -15,7 +15,8 @@
     <color name="light3_blue">#DEF1F6</color>
     <color name="light4_blue">#F2FCFF</color>
 
-    <color name="top">#FF000000</color>
+    <color name="top">#1C4BD1</color>
+    <color name="divider">#FF000000</color>
     <color name="background">#09486D</color>
     <color name="textColor">#FFFFFFFF</color>
     <color name="textColorPrimary">#D5F0F4</color>

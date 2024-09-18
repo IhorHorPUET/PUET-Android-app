@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
         ImageButton settingsButton = findViewById(R.id.settings_button);
         settingsButton.setOnClickListener(view -> {
-            PresentationUtils.vibrate(MainActivity.this, 40);
+            PresentationUtils.vibrate(MainActivity.this, 20);
             Intent intent = new Intent(view.getContext(), SettingsActivity.class);
             settingsActivityLauncher.launch(intent);
         });

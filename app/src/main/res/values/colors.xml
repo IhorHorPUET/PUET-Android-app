@@ -16,6 +16,7 @@
     <color name="light4_blue">#F2FCFF</color>
 
     <color name="top">#1C4BD1</color>
+    <color name="divider">#1C4BD1</color>
     <color name="background">#F2FCFF</color>
     <color name="textColor">#FF000000</color>
     <color name="textColorPrimary">#3F048F</color>
