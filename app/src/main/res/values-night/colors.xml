@@ -23,5 +23,6 @@
     <color name="colorPrimary">#56B4C2</color>
     <color name="colorAccent">#2FA6B8</color>
     <color name="lesson">#616F7F</color>
+    <color name="linkColor">#A9D9F6</color>
 
 </resources>

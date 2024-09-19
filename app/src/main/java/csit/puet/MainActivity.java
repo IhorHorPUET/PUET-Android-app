@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.InputType;
@@ -14,6 +15,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -129,6 +131,50 @@ public class MainActivity extends AppCompatActivity {
         if (savedGroupBands == null) {
             savedGroupBands = new ArrayList<>();
         }
+
+        ImageView puetLogo = findViewById(R.id.puet_logo);
+        puetLogo.setOnClickListener(v -> {
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("")
+                    .setMessage("Перейти на сайт http://puet.edu.ua")
+                    .setPositiveButton("Так", (dialog, which) -> {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://puet.edu.ua/"));
+                        startActivity(browserIntent);
+                    })
+                    .setNegativeButton("Ні", (dialog, which) -> {
+                        dialog.dismiss();
+                    })
+                    .show();
+        });
+
+        TextView toolbarTitle = findViewById(R.id.toolbar_title);
+        toolbarTitle.setOnClickListener(v -> {
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("")
+                    .setMessage("Перейти на сайт https://puetapp.online")
+                    .setPositiveButton("Так", (dialog, which) -> {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://puetapp.online/"));
+                        startActivity(browserIntent);
+                    })
+                    .setNegativeButton("Ні", (dialog, which) -> {
+                        dialog.dismiss();
+                    })
+                    .show();
+        });
+
+        TextView privacyPolicy = findViewById(R.id.privacyPolicy);
+        privacyPolicy.setOnClickListener(v -> {
+            new AlertDialog.Builder(this)
+                    .setTitle("")
+                    .setMessage("Ознайомитися з політикою конфіденційності?")
+                    .setPositiveButton("Так", (dialog, which) -> {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://puetapp.online/privacy-ua.html"));
+                        startActivity(browserIntent);
+                    })
+                    .setNegativeButton("Ні", (dialog, which) -> dialog.dismiss())
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .show();
+        });
 
         ImageButton settingsButton = findViewById(R.id.settings_button);
         settingsButton.setOnClickListener(view -> {

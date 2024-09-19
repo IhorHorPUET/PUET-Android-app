@@ -107,7 +107,7 @@ public class CalendarManager {
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH) + 1;
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-        return String.format("%04d-%02d-%02d", year, month, day);
+        return String.format("%02d.%02d.%04d", day, month, year);
     }
 
     public int getDateRange() {

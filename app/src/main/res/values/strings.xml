@@ -55,6 +55,8 @@
 <br><br>
 <b>Увага!</b> В розкладі можливі зміни!]]></string>
 
+    <string name="privacy_policy">Політика конфіденційності</string>
+
     <string name="revocation_permission_title">Видалення дозволу</string>
     <string name="revocation_permission_message">Додавання розкладу у календар наразі неможливе. Будь ласка, скасуйте дозвіл на використання календаря програмою в налаштуваннях телефону.</string>
 
