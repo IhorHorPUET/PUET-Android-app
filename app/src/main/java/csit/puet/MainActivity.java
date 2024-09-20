@@ -98,6 +98,10 @@ public class MainActivity extends AppCompatActivity {
         PresentationUtils.applySavedTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        View focusCatcher = findViewById(R.id.focus_catcher);
+        focusCatcher.requestFocus();
+
         prefSet = this.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
         prefData = this.getSharedPreferences(AppConstants.PREF_DATA, Context.MODE_PRIVATE);
 
@@ -390,11 +394,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        View focusCatcher = findViewById(R.id.focus_catcher);
+        focusCatcher.requestFocus();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         applyTheme();
         WidgetUtils.updateWidget(this, prefSet);
         GoogleCalendarUtils.handleGoogleCalendarSettings(this, prefSet);
+        View focusCatcher = findViewById(R.id.focus_catcher);
+        focusCatcher.requestFocus();
     }
 
     private void applyTheme() {
