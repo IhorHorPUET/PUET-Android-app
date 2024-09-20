@@ -10,12 +10,15 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.content.SharedPreferences;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AlertDialog;
 
 import androidx.appcompat.app.AppCompatDelegate;
@@ -40,6 +43,19 @@ import android.text.style.StyleSpan;
 import android.text.Layout;
 
 public class PresentationUtils {
+
+    public static void hideKeyboard(Activity activity) {
+        View view = activity.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    public static int calculateDropdownHeight(AutoCompleteTextView autoCompleteTextView, int maxVisibleLines) {
+        int lineHeight = autoCompleteTextView.getLineHeight();
+        return lineHeight * maxVisibleLines;
+    }
 
     public static void setupTextWatcher
             (final AutoCompleteTextView autoCompleteTextView, final ImageButton imageButton) {

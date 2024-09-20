@@ -1,6 +1,7 @@
 package csit.puet.presentation.ui;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,6 +9,7 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 
 import csit.puet.AppConstants;
+import csit.puet.MainActivity;
 import csit.puet.R;
 
 import java.util.Calendar;
@@ -36,6 +38,11 @@ public class CalendarManager {
     }
 
     public void showStartDatePicker() {
+
+        if (context instanceof Activity) {
+            PresentationUtils.hideKeyboard((Activity) context);
+        }
+
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 context,
                 new DatePickerDialog.OnDateSetListener() {
@@ -59,6 +66,11 @@ public class CalendarManager {
     }
 
     public void showEndDatePicker() {
+
+        if (context instanceof Activity) {
+            PresentationUtils.hideKeyboard((Activity) context);
+        }
+
         // Load the date range from SharedPreferences
         SharedPreferences prefSet = context.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
         int dateRange = prefSet.getInt("keyDateRange", 7); // Default is 7 days

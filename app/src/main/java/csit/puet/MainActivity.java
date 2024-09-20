@@ -74,6 +74,10 @@ public class MainActivity extends AppCompatActivity {
     private CalendarManager calendarManager;
     TextView startDateTextView;
     TextView endDateTextView;
+    AutoCompleteTextView teacherNameAutoComplete;
+    AutoCompleteTextView classroomNameAutoComplete;
+    AutoCompleteTextView groupNameAutoComplete;
+    int maxVisibleZone = 8;
 
     List<String> groupBands = new ArrayList<>();
     List<String> searchBands = new ArrayList<>();
@@ -93,14 +97,24 @@ public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> settingsActivityLauncher;
     SharedPreferences prefSet;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         PresentationUtils.applySavedTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        View rootView = findViewById(R.id.root_layout);
         View focusCatcher = findViewById(R.id.focus_catcher);
         focusCatcher.requestFocus();
+
+        rootView.setOnTouchListener((v, event) -> {
+            PresentationUtils.hideKeyboard(MainActivity.this);
+            teacherNameAutoComplete.clearFocus();
+            classroomNameAutoComplete.clearFocus();
+            groupNameAutoComplete.clearFocus();
+            return false;
+        });
 
         prefSet = this.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
         prefData = this.getSharedPreferences(AppConstants.PREF_DATA, Context.MODE_PRIVATE);
@@ -142,7 +156,8 @@ public class MainActivity extends AppCompatActivity {
                     .setTitle("")
                     .setMessage("Перейти на сайт http://puet.edu.ua")
                     .setPositiveButton("Так", (dialog, which) -> {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://puet.edu.ua/"));
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+                                "http://puet.edu.ua/"));
                         startActivity(browserIntent);
                     })
                     .setNegativeButton("Ні", (dialog, which) -> {
@@ -157,7 +172,8 @@ public class MainActivity extends AppCompatActivity {
                     .setTitle("")
                     .setMessage("Перейти на сайт https://puetapp.online")
                     .setPositiveButton("Так", (dialog, which) -> {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://puetapp.online/"));
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+                                "https://puetapp.online/"));
                         startActivity(browserIntent);
                     })
                     .setNegativeButton("Ні", (dialog, which) -> {
@@ -172,7 +188,8 @@ public class MainActivity extends AppCompatActivity {
                     .setTitle("")
                     .setMessage("Ознайомитися з політикою конфіденційності?")
                     .setPositiveButton("Так", (dialog, which) -> {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://puetapp.online/privacy-ua.html"));
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+                                "https://puetapp.online/privacy-ua.html"));
                         startActivity(browserIntent);
                     })
                     .setNegativeButton("Ні", (dialog, which) -> dialog.dismiss())
@@ -215,7 +232,9 @@ public class MainActivity extends AppCompatActivity {
                     listOfTeachers.clear();
                     listOfTeachers.addAll(teachersList);
 
-                    AutoCompleteTextView teacherNameAutoComplete = findViewById(R.id.teachersNameAutoComplete);
+                    teacherNameAutoComplete = findViewById(R.id.teachersNameAutoComplete);
+                    teacherNameAutoComplete.setDropDownHeight(
+                            PresentationUtils.calculateDropdownHeight(teacherNameAutoComplete, maxVisibleZone));
                     teacherNameAutoComplete.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
                     teacherNameAutoComplete.setSingleLine(false);
                     teacherNameAutoComplete.setMaxLines(3);
@@ -267,7 +286,9 @@ public class MainActivity extends AppCompatActivity {
                     listOfClassrooms.clear();
                     listOfClassrooms.addAll(classroomsList);
 
-                    AutoCompleteTextView classroomNameAutoComplete = findViewById(R.id.classroomsNameAutoComplete);
+                    classroomNameAutoComplete = findViewById(R.id.classroomsNameAutoComplete);
+                    classroomNameAutoComplete.setDropDownHeight(
+                            PresentationUtils.calculateDropdownHeight(classroomNameAutoComplete, maxVisibleZone));
                     classroomNameAutoComplete.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
                     classroomNameAutoComplete.setSingleLine(false);
                     classroomNameAutoComplete.setMaxLines(3);
@@ -320,7 +341,9 @@ public class MainActivity extends AppCompatActivity {
                     listOfGroups.clear();
                     listOfGroups.addAll(groupsList);
 
-                    AutoCompleteTextView groupNameAutoComplete = findViewById(R.id.groupsNameAutoComplete);
+                    groupNameAutoComplete = findViewById(R.id.groupsNameAutoComplete);
+                    groupNameAutoComplete.setDropDownHeight(
+                            PresentationUtils.calculateDropdownHeight(groupNameAutoComplete, maxVisibleZone));
                     groupNameAutoComplete.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
                     groupNameAutoComplete.setSingleLine(false);
                     groupNameAutoComplete.setMaxLines(3);
