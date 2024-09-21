@@ -42,7 +42,8 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Lesson lesson = lessons.get(position);
 
-        SpannableString spannableString = new SpannableString(lesson.getLesson() + " (" + lesson.getLessonType() + ")");
+        SpannableString spannableString = new SpannableString(lesson.getLesson() +
+                (lesson.getLessonType().isEmpty() ? " " : " (" + lesson.getLessonType() + ") "));
         spannableString.setSpan(new StyleSpan(Typeface.BOLD), 0, lesson.getLesson().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         holder.tvScheduleDate.setText(formatToCustomFormat(lesson.getDate()));

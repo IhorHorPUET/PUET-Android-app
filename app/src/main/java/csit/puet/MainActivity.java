@@ -525,7 +525,7 @@ public class MainActivity extends AppCompatActivity {
 
                         WidgetUtils.updateWidget(MainActivity.this, prefSet);
                         GoogleCalendarHelper calendarHelper = new GoogleCalendarHelper(MainActivity.this, prefSet);
-                        calendarHelper.addLessonsToCalendar("main");
+                        calendarHelper.addLessonsToCalendar();
                     }
                 }
 

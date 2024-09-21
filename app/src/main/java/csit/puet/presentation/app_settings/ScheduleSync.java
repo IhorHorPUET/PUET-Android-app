@@ -1,9 +1,6 @@
 package csit.puet.presentation.app_settings;
 
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
@@ -36,8 +33,6 @@ import csit.puet.data.DataManager;
 import csit.puet.data.model.Lesson;
 import csit.puet.data.DataUtils;
 import csit.puet.presentation.google_calendar.GoogleCalendarHelper;
-import csit.puet.presentation.ui.PresentationUtils;
-import csit.puet.presentation.widget.ScheduleWidgetProvider;
 import csit.puet.presentation.widget.WidgetUtils;
 
 public class ScheduleSync extends Worker {
@@ -120,7 +115,7 @@ public class ScheduleSync extends Worker {
                 editor.apply();
                 WidgetUtils.updateWidget(context, prefSet);
                 GoogleCalendarHelper calendarHelper = new GoogleCalendarHelper(context, prefSet);
-                calendarHelper.addLessonsToCalendar("sync");
+                calendarHelper.addLessonsToCalendar();
                 executor.shutdown();
             }
 

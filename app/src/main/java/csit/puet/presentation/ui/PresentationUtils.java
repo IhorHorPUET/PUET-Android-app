@@ -10,16 +10,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.content.SharedPreferences;
 import android.widget.TextView;
-
-import androidx.appcompat.app.AlertDialog;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -31,7 +27,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.text.ParseException;
 
-import csit.puet.R;
 import csit.puet.AppConstants;
 import csit.puet.data.model.Lesson;
 
@@ -191,9 +186,7 @@ public class PresentationUtils {
 
             // Add the rest of the lesson details
             scheduleStringBuilder.append(lesson.getLesson())
-                    .append(" (")
-                    .append(lesson.getLessonType())
-                    .append(")")
+                    .append(lesson.getLessonType().isEmpty() ? " " : " (" + lesson.getLessonType() + ") ")
                     .append("\n")
                     .append(lesson.getGroup())
                     .append("\n")

@@ -476,7 +476,7 @@ public class SettingsActivity extends AppCompatActivity {
                 editor.putBoolean(AppConstants.KEY_CALENDAR_PERMISSION_REVOCATION_SHOWN, true);
             }
         } else {
-            calendarHelper.addLessonsToCalendar("settings");
+            calendarHelper.addLessonsToCalendar();
         }
         editor.putBoolean(AppConstants.KEY_GOOGLE_CALENDAR_ENABLED, isGoogleCalendarEnabled);
         editor.putString(AppConstants.KEY_GOOGLE_ACCOUNT_NAME, googleAccountName);
