@@ -75,7 +75,8 @@ public class DataUtils {
         });
     }
 
-    public static <T, R> void saveListToDatabase(Executor executor, List<T> list, Function<T, R> converter, Consumer<List<R>> daoMethod) {
+    public static <T, R> void saveListToDatabase(
+            Executor executor, List<T> list, Function<T, R> converter, Consumer<List<R>> daoMethod) {
         executor.execute(() -> {
             List<R> entities = list.stream().map(converter).collect(Collectors.toList());
             daoMethod.accept(entities);

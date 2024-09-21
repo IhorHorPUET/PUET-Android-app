@@ -323,7 +323,7 @@ public class DataRepository {
         SharedPreferences prefSet = context.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefSet.edit();
 
-        String currentTime = new SimpleDateFormat(" HH:mm dd-MM-yyyy", Locale.getDefault()).format(new Date());
+        String currentTime = new SimpleDateFormat(" dd.MM.yyyy о HH:mm", Locale.getDefault()).format(new Date());
         editor.putString(AppConstants.KEY_LAST_SYNC_TIME, currentTime);
         editor.apply();
     }
