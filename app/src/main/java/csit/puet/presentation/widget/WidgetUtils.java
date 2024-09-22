@@ -26,7 +26,7 @@ public class WidgetUtils {
         scheduleStringBuilder.append("<div style='text-align:center;'>")
                 .append("<font color='#FF9800'>")
                 .append("<b>")
-                .append("Розклад оновлено: ").append(lastSyncTime)
+                .append("Розклад оновлено ").append(lastSyncTime)
                 .append("</b>")
                 .append("</div>");
 

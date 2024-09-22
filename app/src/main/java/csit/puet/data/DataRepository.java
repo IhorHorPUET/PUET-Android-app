@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.widget.Toast;
 
 import csit.puet.AppConstants;
@@ -23,11 +22,10 @@ import csit.puet.data.model.Classroom;
 import csit.puet.data.model.Teacher;
 import csit.puet.data.network.ServerDataSource;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
@@ -323,7 +321,18 @@ public class DataRepository {
         SharedPreferences prefSet = context.getSharedPreferences(AppConstants.PREF_SET, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefSet.edit();
 
-        String currentTime = new SimpleDateFormat(" dd.MM.yyyy о HH:mm", Locale.getDefault()).format(new Date());
+        String[] ukrainianMonths = {"січня", "лютого", "березня", "квітня", "травня", "червня",
+                "липня", "серпня", "вересня", "жовтня", "листопада", "грудня"};
+
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+
+        String currentTime = String.format(Locale.getDefault(), "%02d %s о %02d:%02d",
+                day, ukrainianMonths[month], hour, minute);
+
         editor.putString(AppConstants.KEY_LAST_SYNC_TIME, currentTime);
         editor.apply();
     }
